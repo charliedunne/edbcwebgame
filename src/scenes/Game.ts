@@ -47,7 +47,4 @@ export default class Demo extends Phaser.Scene {
     }
   }
 
-function CardAttributes(arg0: { id: number; title: string; type: CardType; }): import("../engine/CardBase").CardAttributes {
-  throw new Error('Function not implemented.');
-}
   
