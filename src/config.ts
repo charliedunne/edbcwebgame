@@ -6,8 +6,9 @@ export default {
   backgroundColor: '#33A5E7',
   scale: {
     width: 1920,
-    height: 1080,
-    mode: Phaser.Scale.FIT,
-    autoCenter: Phaser.Scale.CENTER_BOTH
+    height: 1200,
+    mode: Phaser.Scale.ENVELOP,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+    zoom: 1
   }
 };

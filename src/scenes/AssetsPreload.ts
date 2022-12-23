@@ -11,12 +11,14 @@ export function edbc_preload(scene: Phaser.Scene) {
      scene.load.image('bg_ship_empire', 'assets/images/cards/common/edbc_ship_card_bg__empire.png');
      scene.load.image('bg_ship_federation', 'assets/images/cards/common/edbc_ship_card_bg__federation.png');
      scene.load.image('bg_ship_neutral', 'assets/images/cards/common/edbc_ship_card_bg__neutral.png');
+     scene.load.image('bg_ship_none', 'assets/images/cards/common/edbc_ship_card_bg__none.png');
 
      /* Action Card Backgrounds */
      scene.load.image('bg_action_alliance', 'assets/images/cards/common/edbc_action_card_bg__alliance.png');
      scene.load.image('bg_action_empire', 'assets/images/cards/common/edbc_action_card_bg__empire.png');
      scene.load.image('bg_action_federation', 'assets/images/cards/common/edbc_action_card_bg__federation.png');
      scene.load.image('bg_action_neutral', 'assets/images/cards/common/edbc_action_card_bg__neutral.png');
+     scene.load.image('bg_action_none', 'assets/images/cards/common/edbc_action_card_bg__none.png');
 
      /* Outfitting Card Background */
      scene.load.image('bg_outfitting', 'assets/images/cards/common/edbc_outfitting_card_bg.png');
@@ -37,4 +39,12 @@ export function edbc_preload(scene: Phaser.Scene) {
      scene.load.bitmapFont('orbitron_bold', 'assets/fonts/orbitron_bold_0.png', 'assets/fonts/orbitron_bold.fnt');
      scene.load.bitmapFont('eurostile', 'assets/fonts/eurostile_0.png', 'assets/fonts/eurostile.fnt');
      scene.load.bitmapFont('eurostile_bold', 'assets/fonts/eurostile_bold_0.png', 'assets/fonts/eurostile_bold.fnt');
+
+     /* Icons */
+     scene.load.image('coriolis', 'assets/images/cards/common/edbc_ico_coriolis.png');
+     scene.load.image('outpost', 'assets/images/cards/common/edbc_ico_outpost.png');
+     scene.load.image('orbis', 'assets/images/cards/common/edbc_ico_orbis.png');
+     scene.load.image('ocellus', 'assets/images/cards/common/edbc_ico_ocellus.png');
+     scene.load.image('megaship', 'assets/images/cards/common/edbc_ico_megaship.png');
+     scene.load.image('asteroids', 'assets/images/cards/common/edbc_ico_asteroids.png');
 }
