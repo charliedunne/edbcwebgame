@@ -1,6 +1,6 @@
 import Phaser, { Core } from 'phaser';
 import {edbc_preload} from './AssetsPreload'
-import CardBase from '../engine/CardBase';
+import CardBase, { ShipRole } from '../engine/CardBase';
 import {CardType, CardFaction, CardSet} from '../engine/CardBase';
 
 export default class Demo extends Phaser.Scene {
@@ -22,28 +22,23 @@ export default class Demo extends Phaser.Scene {
     
     const card = new CardBase(
       this, 
-      this.cameras.main.centerX, this.cameras.main.centerY,
-      {id: 1, set: CardSet.core, title: "Adder", type: CardType.ship, faction: CardFaction.federation});
-      card.setScale(0.55);
+      100, 1000,
+      {id: 1, set: CardSet.core, title: "Orca Delta", 
+      type: CardType.ship, faction: CardFaction.alliance},
+      {cost:5, karma: 0, strength: 4, speed: 30, builder: 'saud kruger', model: 'orca', role: [ShipRole.liner]});
+      card.setScale(0.1);
     
-     
-//    this.input.enableDebug(card)
-      
-      
-      
-      
-      /*
-      const logo = this.add.image(400, 70, 'logo');
       
       this.tweens.add({
-        targets: logo,
-        y: 350,
-        duration: 1500,
-        ease: 'Sine.inOut',
-        yoyo: true,
-        repeat: -1
+        targets: card,
+        x: this.cameras.main.centerX,
+        y: this.cameras.main.centerY,
+        scale: 0.55,
+        duration: 500,
+        ease: 'Cubic.inOut',
+        yoyo: false,
+        repeat: 0
       });
-      */
     }
   }
 

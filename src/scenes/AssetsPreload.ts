@@ -27,7 +27,7 @@ export function edbc_preload(scene: Phaser.Scene) {
      scene.load.image('card_cd', 'assets/images/cards/common/edbc_ship_cd.png');
      scene.load.image('card_cd_cost_0', 'assets/images/cards/common/edbc_ship_cd_cost_0karma.png');
      scene.load.image('card_cd_cost_1up', 'assets/images/cards/common/edbc_ship_cd_cost_1karma_up.png');
-     scene.load.image('card_cd_cost_1down', 'assets/images/cards/common/edbc_ship_cd_cost_1karma_down.png');
+     scene.load.image('card_cd_cost_1', 'assets/images/cards/common/edbc_ship_cd_cost_1karma_down.png');
      scene.load.image('card_cd_cost_2', 'assets/images/cards/common/edbc_ship_cd_cost_2karma.png');
  
      /* Card Art */
@@ -47,4 +47,9 @@ export function edbc_preload(scene: Phaser.Scene) {
      scene.load.image('ocellus', 'assets/images/cards/common/edbc_ico_ocellus.png');
      scene.load.image('megaship', 'assets/images/cards/common/edbc_ico_megaship.png');
      scene.load.image('asteroids', 'assets/images/cards/common/edbc_ico_asteroids.png');
+     scene.load.image('federation', 'assets/images/cards/common/edbc_ico_federation.png');
+     scene.load.image('empire', 'assets/images/cards/common/edbc_ico_empire.png');
+     scene.load.image('alliance', 'assets/images/cards/common/edbc_ico_alliance.png');
+     scene.load.image('neutral', 'assets/images/cards/common/edbc_ico_neutral.png');
+
 }
