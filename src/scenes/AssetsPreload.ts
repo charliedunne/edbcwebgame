@@ -47,9 +47,9 @@ export function edbc_preload(scene: Phaser.Scene) {
      scene.load.image('ocellus', 'assets/images/cards/common/edbc_ico_ocellus.png');
      scene.load.image('megaship', 'assets/images/cards/common/edbc_ico_megaship.png');
      scene.load.image('asteroids', 'assets/images/cards/common/edbc_ico_asteroids.png');
-     scene.load.image('federation', 'assets/images/cards/common/edbc_ico_federation.png');
-     scene.load.image('empire', 'assets/images/cards/common/edbc_ico_empire.png');
-     scene.load.image('alliance', 'assets/images/cards/common/edbc_ico_alliance.png');
-     scene.load.image('neutral', 'assets/images/cards/common/edbc_ico_neutral.png');
+     scene.load.image('federation', 'assets/images/cards/common/edbc_ico_federation_s.png');
+     scene.load.image('empire', 'assets/images/cards/common/edbc_ico_empire_s.png');
+     scene.load.image('alliance', 'assets/images/cards/common/edbc_ico_alliance_s.png');
+     scene.load.image('neutral', 'assets/images/cards/common/edbc_ico_neutral_s.png');
 
 }

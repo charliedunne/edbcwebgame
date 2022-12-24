@@ -24,7 +24,7 @@ export default class Demo extends Phaser.Scene {
       this, 
       100, 1000,
       {id: 1, set: CardSet.core, title: "Orca Delta", 
-      type: CardType.ship, faction: CardFaction.alliance},
+      type: CardType.ship, faction: CardFaction.empire},
       {cost:5, karma: 0, strength: 4, speed: 30, builder: 'saud kruger', model: 'orca', role: [ShipRole.liner]});
       card.setScale(0.1);
     

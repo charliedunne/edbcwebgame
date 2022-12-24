@@ -136,8 +136,15 @@ export default class CardBase extends Phaser.GameObjects.Container {
             this.bg = scene.add.image(0, 0, visuals.bg)
             
             /* Chose icon */
-            this.factionIcon = scene.add.image(0, 0, bBaseAttr.faction.toString())
-            
+            if (bBaseAttr.type == CardType.ship)
+            {
+                this.factionIcon = scene.add.image(510, 140, bBaseAttr.faction.toString())
+            }
+            else
+            {
+                this.factionIcon = scene.add.image(510, 205, bBaseAttr.faction.toString())
+            }
+
             /* Print Card Core Icon */
             this.set = scene.add.image(0, 0, visuals.set)
             
