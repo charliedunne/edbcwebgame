@@ -96,6 +96,10 @@ export default class CardBase extends Phaser.GameObjects.Container {
     /* Position */
     preZoomXPos: number;
     preZoomYPos: number;
+
+    /* Dragging flag */
+    dragging: Boolean;
+    isTrigger: Boolean;
     
     /* Status */
     zoomStatus: CardZoomStatus;
@@ -151,6 +155,10 @@ export default class CardBase extends Phaser.GameObjects.Container {
             /* Position */
             this.x = x;
             this.y = y;
+
+            /* Dragging flag */
+            this.dragging = false;
+            this.isTrigger = false;
             
             /* Reset zoom status */
             this.zoomStatus = CardZoomStatus.default;
@@ -259,19 +267,34 @@ export default class CardBase extends Phaser.GameObjects.Container {
             this.setInteractive(new Phaser.Geom.Rectangle(
                 -this.bg.width/2, -this.bg.height/2, this.bg.width, this.bg.height), 
                 Phaser.Geom.Rectangle.Contains);
+
+            /* Make it Draggable */
+            this.scene.input.setDraggable(this);
                 
             this.on('clicked', this.click, this);
+            //this.on('dragging', this.drag, this);
                 
             }
             
+            drag()
+            {
+                console.log('drag');
+                this.isTrigger = false;
+            }
+
+            trigger()
+            {
+                console.log('trigger');
+                this.isTrigger = true;
+            }
+
             click()
             {
-                if (this.zoomStatus == CardZoomStatus.default)
+                if ((this.zoomStatus == CardZoomStatus.default) && (this.isTrigger == true))
                 {
                     /* Bring to top */
                     this.scene.children.bringToTop(this);
                     
-                    console.log("go click for [" + this.baseAttr.id + "], current status: " + this.zoomStatus);
                     this.preZoomXPos = this.x;
                     this.preZoomYPos = this.y;
                     
@@ -288,11 +311,11 @@ export default class CardBase extends Phaser.GameObjects.Container {
                     
                     /* Change zoomStatus */
                     this.zoomStatus = CardZoomStatus.click;
+                    this.isTrigger = false;
 
                 }
-                else if (this.zoomStatus == CardZoomStatus.click)
+                else if ((this.zoomStatus == CardZoomStatus.click) && (this.isTrigger == true))
                 {
-                    console.log("go back click for [" + this.baseAttr.id + "], current status: " + this.zoomStatus);
                     this.scene.tweens.add({
                         targets: this,
                         x: this.preZoomXPos,
@@ -306,6 +329,7 @@ export default class CardBase extends Phaser.GameObjects.Container {
                     
                     /* Change zoomStatus */
                     this.zoomStatus = CardZoomStatus.default;
+                    this.isTrigger = false;
                 }
             }
         }

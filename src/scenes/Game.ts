@@ -23,7 +23,7 @@ export default class Demo extends Phaser.Scene {
     let cards: CardBase[];
     
     cards = [];
-    
+    /*
     
     for (let i = 0; i < 12; ++i) {
       for (let j = 0; j < 5; ++j) {
@@ -36,26 +36,68 @@ export default class Demo extends Phaser.Scene {
           {cost:5, karma: 0, strength: 4, speed: 30, builder: 'saud kruger', model: 'orca', role: [ShipRole.liner]});
           card.setScale(0.1);
           
-          let card2 = new CardBase(
-            this, 
-            130 + 1*150, 200+1*200,
-            {id: 2, set: CardSet.core, title: "Adder Cornucopia", 
-            type: CardType.ship, faction: CardFaction.federation},
-            {cost:3, karma: 1, strength: 2, speed: 60, builder: 'Audi', model: 'ADDER', role: [ShipRole.multipurpose, ShipRole.liner]});
-            card2.setScale(0.1);
-            
-            cards.push(card); 
-            cards.push(card2);
-          }
         }
-        
-        this.input.on('gameobjectup', function (pointer, object:CardBase)
-        {
-          console.log('click');
-          object.emit('clicked', object);
-        }, this)
-        
       }
+      */
+
+      let card = new CardBase(
+        this, 
+        130 + 150, 200,
+        {id: 1, set: CardSet.core, title: "Orca Delta", 
+        type: CardType.ship, faction: CardFaction.empire},
+        {cost:5, karma: 0, strength: 4, speed: 30, builder: 'saud kruger', model: 'orca', role: [ShipRole.liner]});
+      card.setScale(0.1);     
+      
+      let card2 = new CardBase(
+        this, 
+        530, 200,
+        {id: 2, set: CardSet.core, title: "Adder Cornucopia", 
+        type: CardType.ship, faction: CardFaction.alliance},
+        {cost:4, karma: 1, strength: 3, speed: 60, builder: 'Falcon delacy', model: 'Krait MkII', role: [ShipRole.multipurpose]});
+      card2.setScale(0.1);  
+
+      let card3 = new CardBase(
+        this, 
+        830, 200,
+        {id: 3, set: CardSet.core, title: "Cutty Imperial", 
+        type: CardType.ship, faction: CardFaction.empire},
+        {cost:9, karma: 2, strength: 8, speed: 50, builder: 'Imperias Strike', model: 'Imperial Cutter', role: [ShipRole.figher, ShipRole.warship]});
+      card3.setScale(0.1);  
+
+
+      this.input.on('gameobjectdown', function (pointer, object:CardBase)
+      {
+        object.trigger();
+      }, this)
+      
+      this.input.on('gameobjectup', function (pointer, object:CardBase)
+      {
+        console.log('click');
+        object.emit('clicked', object);
+      }, this)
+      
+      this.input.on('dragstart', function (pointer, object:CardBase, dragX, dragY)
+      {
+        console.log("dragstart");
+      })
+      
+      this.input.on('drag', function(pointer, object:CardBase, dragX, dragY)
+      {
+        object.x = dragX;
+        object.y = dragY;
+        object.drag();
+      })
+      
+      this.input.on('dragend', function (pointer, object:CardBase, dragX, dragY)
+      {
+        console.log("dragend");
+      
+        //object.undrag();
+      })        
+      
+      
+      
     }
-    
-    
+  }
+  
+  
