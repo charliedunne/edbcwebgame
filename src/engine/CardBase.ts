@@ -24,7 +24,14 @@ export enum ShipRole {
     multipurpose = 'Multipurpose',
     liner = 'Liner',
     miner = 'Miner',
-    explorer = 'Explorer'
+    explorer = 'Explorer',
+    transporter = 'Transporter'
+}
+
+enum CardZoomStatus {
+    default,
+    hover,
+    click
 }
 
 enum CardColor {
@@ -76,15 +83,22 @@ class CardVisuals {
         }
         
         this.set = set.toString();
-        
-        console.log(this.bg)
-        console.log(this.set)
     }
 }
 
 export default class CardBase extends Phaser.GameObjects.Container {
     
     /* --- Private members --- */
+    
+    /* Scene */
+    scene: Phaser.Scene;
+    
+    /* Position */
+    preZoomXPos: number;
+    preZoomYPos: number;
+    
+    /* Status */
+    zoomStatus: CardZoomStatus;
     
     /* Background */
     bg: Phaser.GameObjects.Image;
@@ -113,6 +127,7 @@ export default class CardBase extends Phaser.GameObjects.Container {
     speed: Phaser.GameObjects.BitmapText;
     
     /* Card Data */
+    baseAttr: CardBaseAttr;
     shipAttr: CardShipAttr;
     
     constructor(
@@ -126,7 +141,22 @@ export default class CardBase extends Phaser.GameObjects.Container {
             /* Call the Base constructor */
             super(scene, x, y);
             
+            /* Save scene */
+            this.scene = scene;
+            
+            /* Initial position */
+            this.preZoomXPos = x;
+            this.preZoomYPos = y;
+            
+            /* Position */
+            this.x = x;
+            this.y = y;
+            
+            /* Reset zoom status */
+            this.zoomStatus = CardZoomStatus.default;
+            
             /* Save data */
+            this.baseAttr = bBaseAttr;
             this.shipAttr = bShipAttr;
             
             /* -- Set Card Visuals -- */
@@ -144,7 +174,7 @@ export default class CardBase extends Phaser.GameObjects.Container {
             {
                 this.factionIcon = scene.add.image(510, 205, bBaseAttr.faction.toString())
             }
-
+            
             /* Print Card Core Icon */
             this.set = scene.add.image(0, 0, visuals.set)
             
@@ -162,8 +192,6 @@ export default class CardBase extends Phaser.GameObjects.Container {
             
             this.title = scene.add.bitmapText(-560, titleYPosition, 'orbitron', bBaseAttr.title.toUpperCase(), 85).setOrigin(0, 0);
             this.title.setTint(CardColor[bBaseAttr.faction])
-            console.log("Title Width: " + this.title.width)
-            console.log("Title Height: " + this.title.height)
             
             /* Ship model details */
             if (bBaseAttr.type == CardType.ship)
@@ -179,7 +207,7 @@ export default class CardBase extends Phaser.GameObjects.Container {
             {
                 this.shipAttr.karma = 0;
             }
-
+            
             if (bBaseAttr.type == CardType.ship)
             {
                 if (this.shipAttr.strength !== undefined)
@@ -191,7 +219,7 @@ export default class CardBase extends Phaser.GameObjects.Container {
                 this.speed = scene.add.bitmapText(-425, -280, 'eurostile_bold', this.shipAttr?.speed.toString(), 80).setOrigin(0.5);
                 
             }
-
+            
             /* Set cost */
             if (this.shipAttr?.cost !== undefined)
             {
@@ -218,12 +246,67 @@ export default class CardBase extends Phaser.GameObjects.Container {
             {
                 this.add(this.costFrame);
                 this.add(this.cost);
-            }            
+            }     
+            
+            
             /* Set Object position */
             this.setPosition(x, y);
             
             /* Add the container to the scene */
             scene.add.existing(this);
+            
+            /* Set container as interactive */
+            this.setInteractive(new Phaser.Geom.Rectangle(
+                -this.bg.width/2, -this.bg.height/2, this.bg.width, this.bg.height), 
+                Phaser.Geom.Rectangle.Contains);
+                
+            this.on('clicked', this.click, this);
+                
+            }
+            
+            click()
+            {
+                if (this.zoomStatus == CardZoomStatus.default)
+                {
+                    /* Bring to top */
+                    this.scene.children.bringToTop(this);
+                    
+                    console.log("go click for [" + this.baseAttr.id + "], current status: " + this.zoomStatus);
+                    this.preZoomXPos = this.x;
+                    this.preZoomYPos = this.y;
+                    
+                    this.scene.tweens.add({
+                        targets: this,
+                        x: this.scene.cameras.main.centerX,
+                        y: this.scene.cameras.main.centerY,
+                        scale: 0.55,
+                        duration: 500,
+                        ease: 'Cubic.inOut',
+                        yoyo: false,
+                        repeat: 0
+                    });
+                    
+                    /* Change zoomStatus */
+                    this.zoomStatus = CardZoomStatus.click;
+
+                }
+                else if (this.zoomStatus == CardZoomStatus.click)
+                {
+                    console.log("go back click for [" + this.baseAttr.id + "], current status: " + this.zoomStatus);
+                    this.scene.tweens.add({
+                        targets: this,
+                        x: this.preZoomXPos,
+                        y: this.preZoomYPos,
+                        scale: 0.1,
+                        duration: 500,
+                        ease: 'Cubic.inOut',
+                        yoyo: false,
+                        repeat: 0
+                    });    
+                    
+                    /* Change zoomStatus */
+                    this.zoomStatus = CardZoomStatus.default;
+                }
+            }
         }
-    }
-    
+        

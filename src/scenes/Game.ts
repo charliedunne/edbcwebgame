@@ -20,26 +20,42 @@ export default class Demo extends Phaser.Scene {
   
   create() {
     
-    const card = new CardBase(
-      this, 
-      100, 1000,
-      {id: 1, set: CardSet.core, title: "Orca Delta", 
-      type: CardType.ship, faction: CardFaction.empire},
-      {cost:5, karma: 0, strength: 4, speed: 30, builder: 'saud kruger', model: 'orca', role: [ShipRole.liner]});
-      card.setScale(0.1);
+    let cards: CardBase[];
     
-      
-      this.tweens.add({
-        targets: card,
-        x: this.cameras.main.centerX,
-        y: this.cameras.main.centerY,
-        scale: 0.55,
-        duration: 500,
-        ease: 'Cubic.inOut',
-        yoyo: false,
-        repeat: 0
-      });
+    cards = [];
+    
+    
+    for (let i = 0; i < 12; ++i) {
+      for (let j = 0; j < 5; ++j) {
+        
+        let card = new CardBase(
+          this, 
+          130 + i*150, 200+j*200,
+          {id: 1, set: CardSet.core, title: "Orca Delta", 
+          type: CardType.ship, faction: CardFaction.empire},
+          {cost:5, karma: 0, strength: 4, speed: 30, builder: 'saud kruger', model: 'orca', role: [ShipRole.liner]});
+          card.setScale(0.1);
+          
+          let card2 = new CardBase(
+            this, 
+            130 + 1*150, 200+1*200,
+            {id: 2, set: CardSet.core, title: "Adder Cornucopia", 
+            type: CardType.ship, faction: CardFaction.federation},
+            {cost:3, karma: 1, strength: 2, speed: 60, builder: 'Audi', model: 'ADDER', role: [ShipRole.multipurpose, ShipRole.liner]});
+            card2.setScale(0.1);
+            
+            cards.push(card); 
+            cards.push(card2);
+          }
+        }
+        
+        this.input.on('gameobjectup', function (pointer, object:CardBase)
+        {
+          console.log('click');
+          object.emit('clicked', object);
+        }, this)
+        
+      }
     }
-  }
-
-  
+    
+    
