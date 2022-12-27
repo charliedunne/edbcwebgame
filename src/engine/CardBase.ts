@@ -309,7 +309,7 @@ export default class CardBase extends Phaser.GameObjects.Container {
                     targets: this,
                     scaleX: 0,
                     duration: duration,
-                    delay: 50,
+                    delay: 10,
                     ease: 'Cubic.inOut',
                     onComplete: () => {
                         if (this.back.visible)
