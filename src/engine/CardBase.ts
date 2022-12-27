@@ -25,7 +25,8 @@ export enum ShipRole {
     liner = 'Liner',
     miner = 'Miner',
     explorer = 'Explorer',
-    transporter = 'Transporter'
+    transport = 'Transport',
+    bountyHunter = 'Bounty Hunter'
 }
 
 enum CardZoomStatus {
@@ -106,6 +107,7 @@ export default class CardBase extends Phaser.GameObjects.Container {
     
     /* Background */
     bg: Phaser.GameObjects.Image;
+    back: Phaser.GameObjects.Image;
     
     /* Faction icon */
     factionIcon: Phaser.GameObjects.Image;
@@ -235,6 +237,10 @@ export default class CardBase extends Phaser.GameObjects.Container {
                 this.costFrame = scene.add.image(0, 0, costString)
                 this.cost = scene.add.bitmapText(-425, -742, 'eurostile_bold', this.shipAttr?.cost.toString(), 110).setOrigin(0.5);
             }
+
+
+            /* Create Card Back */
+            this.back = scene.add.image(0, 0, 'card_back');
             
             /* Add object to container */
             this.add(this.bg);
@@ -255,6 +261,7 @@ export default class CardBase extends Phaser.GameObjects.Container {
                 this.add(this.costFrame);
                 this.add(this.cost);
             }     
+            this.add(this.back);
             
             
             /* Set Object position */
@@ -274,6 +281,65 @@ export default class CardBase extends Phaser.GameObjects.Container {
             this.on('clicked', this.click, this);
             //this.on('dragging', this.drag, this);
                 
+            }
+
+            flip()
+            {
+                console.log("flipping...");
+
+                const currentScaleX = this.scaleX;
+                const currentScaleY = this.scaleY;
+
+                const duration: number = 100;
+
+                const timeline = this.scene.tweens.timeline({
+                    onComplete: () => {
+                        timeline.destroy();
+                    }
+                });
+
+                timeline.add({
+                    targets: this,
+                    scale: this.scale * 1.1,
+                    duration: duration,
+                    ease: 'Cubic.inOut',
+                })
+
+                timeline.add({
+                    targets: this,
+                    scaleX: 0,
+                    duration: duration,
+                    delay: 50,
+                    ease: 'Cubic.inOut',
+                    onComplete: () => {
+                        if (this.back.visible)
+                        {
+                            this.back.setVisible(false);
+                        }
+                        else
+                        {
+                            this.back.setVisible(true);
+                        }
+                    }
+                })
+
+                timeline.add({
+                    targets: this,
+                    scaleX: currentScaleX*1.1,
+                    duration: duration,
+                    ease: 'Cubic.inOut',
+                })
+
+                timeline.add({
+                    targets: this,
+                    scaleX: currentScaleX,
+                    scaleY: currentScaleY,
+                    duration: duration,
+                    ease: 'Cubic.inOut',
+                })
+
+                timeline.play()
+
             }
             
             drag()
@@ -303,7 +369,7 @@ export default class CardBase extends Phaser.GameObjects.Container {
                         x: this.scene.cameras.main.centerX,
                         y: this.scene.cameras.main.centerY,
                         scale: 0.55,
-                        duration: 500,
+                        duration: 300,
                         ease: 'Cubic.inOut',
                         yoyo: false,
                         repeat: 0
