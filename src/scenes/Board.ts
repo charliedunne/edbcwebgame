@@ -198,6 +198,7 @@ export default class Board extends Phaser.Scene {
 
         this.input.mouse.disableContextMenu();
 
+        /*
         this.input.on(
             "gameobjectover",
             function (pointer: Phaser.Input.Pointer, object: CardBase) {
@@ -213,12 +214,13 @@ export default class Board extends Phaser.Scene {
                 object.unhover();
             }, this
         );
+        */
 
         this.input.on(
             "gameobjectdown",
             function (pointer, object: CardBase) {
                 object.trigger();
-                object.unhover();
+                //object.unhover();
             },
             this
         );
@@ -253,6 +255,8 @@ export default class Board extends Phaser.Scene {
             },
             this
         );
+
+        card2.drain();
 
     }
 

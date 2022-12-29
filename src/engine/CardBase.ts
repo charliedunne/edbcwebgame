@@ -109,6 +109,7 @@ export default class CardBase extends Phaser.GameObjects.Container {
     /* Background */
     bg: Phaser.GameObjects.Image;
     back: Phaser.GameObjects.Image;
+    frameDrained: Phaser.GameObjects.Image;
 
     /* Faction icon */
     factionIcon: Phaser.GameObjects.Image;
@@ -295,6 +296,9 @@ export default class CardBase extends Phaser.GameObjects.Container {
         /* Create Card Back */
         this.back = scene.add.image(0, 0, "card_back");
 
+        /* Frames */
+        this.frameDrained = scene.add.image(0, 0, "drained").setAlpha(0);
+
         /* Add object to container */
         this.add(this.bg);
         this.add(this.factionIcon);
@@ -313,6 +317,7 @@ export default class CardBase extends Phaser.GameObjects.Container {
             this.add(this.cost);
         }
         this.add(this.back);
+        this.add(this.frameDrained);
 
         /* Set Object position */
         this.setPosition(x, y);
@@ -436,7 +441,7 @@ export default class CardBase extends Phaser.GameObjects.Container {
                 x: this.preZoomXPos,
                 y: this.preZoomYPos,
                 scale: 0.1,
-                duration: 500,
+                duration: 300,
                 ease: "Cubic.inOut",
                 yoyo: false,
                 repeat: 0,
@@ -487,6 +492,29 @@ export default class CardBase extends Phaser.GameObjects.Container {
             scale: 0.1,
             duration: 100,
             ease: "Cubic.inOut"
+        })
+    }
+
+    drain() {
+        this.frameDrained.setAlpha(0);
+        this.scene.tweens.add({
+            targets: this.frameDrained,
+            alpha: .5,
+            duration: 500,
+            yoyo: false,
+            ease: "Power1.inOut",
+            repeat: 0
+        })
+    }
+
+    undrain() {
+        this.scene.tweens.add({
+            targets: this.frameDrained,
+            alpha: 0,
+            duration: 1000,
+            yoyo: false,
+            ease: "Power1.inOut",
+            repeat: 0
         })
     }
 }
