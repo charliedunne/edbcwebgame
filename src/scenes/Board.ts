@@ -1,10 +1,19 @@
 import { edbc_preload } from "./AssetsPreload";
 import CardBase from "../engine/CardBase";
 import { CardType, CardFaction, CardSet, ShipRole } from "../engine/CardBase";
+import Deck from "../engine/Deck";
+import GameZone from "../engine/GameZone";
+import HandZone from "../engine/HandZone";
+import {User} from "../engine/HandZone";
 
 export default class Board extends Phaser.Scene {
+
+    cards: CardBase [];
+
     constructor() {
         super("Elite Dangerous Battle Cards");
+
+        this.cards = new Array();
     }
 
     preload() {
@@ -13,6 +22,8 @@ export default class Board extends Phaser.Scene {
     }
 
     create() {
+
+
         /* Create Background */
         this.add.image(0, 0, "background").setOrigin(0);
         this.add.image(0, 0, "areas_layer").setOrigin(0);
@@ -20,7 +31,7 @@ export default class Board extends Phaser.Scene {
         const side_x: number = 140;
         const side_y: number = 200;
 
-        let card = new CardBase(
+/*         let card = new CardBase(
             this,
             130,
             760,
@@ -113,7 +124,7 @@ export default class Board extends Phaser.Scene {
             130,
             760 + side_y,
             {
-                id: 6,
+                id: 5,
                 set: CardSet.core,
                 title: "WTF",
                 type: CardType.action,
@@ -177,7 +188,7 @@ export default class Board extends Phaser.Scene {
             130 + 3 * side_x,
             760 + side_y,
             {
-                id: 7,
+                id: 8,
                 set: CardSet.core,
                 title: "Diamondback flux",
                 type: CardType.ship,
@@ -195,11 +206,48 @@ export default class Board extends Phaser.Scene {
         );
 
         card8.setScale(0.1);
+ */
+        for (let i = 9; i < 20; ++i )
+        {
+            let tempCard = new CardBase(
+                this,
+                800,
+                600,
+                {
+                    id: i,
+                    set: CardSet.core,
+                    title: "Diamondback flux",
+                    type: CardType.ship,
+                    faction: CardFaction.federation,
+                },
+                {
+                    cost: 5,
+                    karma: 0,
+                    strength: 4,
+                    speed: 40,
+                    builder: "Lakon",
+                    model: "Diamondback Scout",
+                    role: [ShipRole.figher, ShipRole.explorer],
+                }
+            ).setScale(0.1); 
+            
+            this.cards.push(tempCard);
+        }
+
+/*          this.cards.push(card);
+        this.cards.push(card2);
+        this.cards.push(card3);
+        this.cards.push(card4);
+        this.cards.push(card5);
+        this.cards.push(card6);
+        this.cards.push(card7);
+        this.cards.push(card8);  */
+
 
         this.input.mouse.disableContextMenu();
 
-        /*
-        this.input.on(
+        
+/*         this.input.on(
             "gameobjectover",
             function (pointer: Phaser.Input.Pointer, object: CardBase) {
                 if (pointer.noButtonDown()) {
@@ -213,8 +261,8 @@ export default class Board extends Phaser.Scene {
             function (pointer: Phaser.Input.Pointer, object: CardBase) {
                 object.unhover();
             }, this
-        );
-        */
+        ); */
+        
 
         this.input.on(
             "gameobjectdown",
@@ -223,9 +271,9 @@ export default class Board extends Phaser.Scene {
                 //object.unhover();
             },
             this
-        );
+        ); 
 
-        this.input.on(
+         this.input.on(
             "gameobjectup",
             function (pointer: Phaser.Input.Pointer, object: CardBase) {
                 if (pointer.rightButtonReleased()) {
@@ -236,7 +284,7 @@ export default class Board extends Phaser.Scene {
                 }
             },
             this
-        );
+        ); 
 
         this.input.on(
             "drag",
@@ -247,16 +295,65 @@ export default class Board extends Phaser.Scene {
             },
             this
         );
-
-        this.input.on(
+ 
+         this.input.on(
             "dragend",
-            function (pointer, object: CardBase, dragX, dragY) {
-                //object.undrag();
+            function (pointer, object: CardBase, dropped) {
+                if (!dropped)
+                {
+                    object.move(object.input.dragStartX, object.input.dragStartY);
+                }
             },
             this
-        );
+        ); 
 
-        card2.drain();
+
+/*         let deck = new Deck(this);
+
+        deck.pushCard(card);
+        deck.pushCard(card2);
+        deck.pushCard(card3);
+        deck.pushCard(card4);
+        deck.pushCard(card5);
+        deck.pushCard(card6);
+        deck.pushCard(card7);
+        deck.pushCard(card8);
+
+        console.log("deck :" + deck.getLength());
+
+        for (let i = 0; i < deck.getLength(); ++i) {
+            console.log(deck.getCardById(i).getBaseAttr().id);
+        }
+
+        deck.shuffleDeck()
+       
+        console.log("deck again:");
+        for (let i = 0; i < deck.getLength(); ++i) {
+            console.log(deck.getCardById(i).getBaseAttr().id);
+        }
+
+        deck.shuffleDeck()
+
+        const mycard = deck.popCard();
+        console.log("Last:")
+       
+        for (let i = 0; i < deck.getLength(); ++i) {
+            console.log(deck.getCardById(i).getBaseAttr().id);
+        } */
+
+        let dropZone = new GameZone(this, 42, 100, 595, 498, "enemy_left");
+
+        let playerHand = new HandZone(this, User.player);
+   
+        this.input.on('dragstart', function(pointer, gameObject) {
+            console.log("drag_start")
+            gameObject.bringToTop()
+        }, this) 
+
+        this.input.on('drop', function (pointer, gameObject:CardBase, dropZone:ZoneBase) {
+            dropZone.addCard(gameObject);
+            gameObject.updateZone(dropZone);
+        }, this);
 
     }
 

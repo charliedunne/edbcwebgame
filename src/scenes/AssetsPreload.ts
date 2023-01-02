@@ -10,7 +10,8 @@ export function edbc_preload(scene: Phaser.Scene) {
      scene.load.image('card_back', 'assets/images/cards/common/edbc_frame_back.png');
 
      /* Frames */
-     scene.load.image('drained', 'assets/images/cards/common/edbc_frame_drained.png')
+     scene.load.image('drained_a', 'assets/images/cards/frames/edbc_frame_drained_a.png')
+     scene.load.image('drained_b', 'assets/images/cards/frames/edbc_frame_drained_b.png')
 
      /* Ship Card Backgrounds */
      scene.load.image('bg_ship_alliance', 'assets/images/cards/common/edbc_ship_card_bg__alliance.png');

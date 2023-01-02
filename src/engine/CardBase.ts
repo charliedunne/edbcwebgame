@@ -1,3 +1,5 @@
+import GameZone from "../engine/GameZone";
+
 export enum CardType {
     none = "none",
     ship = "ship",
@@ -106,6 +108,9 @@ export default class CardBase extends Phaser.GameObjects.Container {
     /* Status */
     zoomStatus: CardZoomStatus;
 
+    /* Zone */
+    currentZone: GameZone;
+
     /* Background */
     bg: Phaser.GameObjects.Image;
     back: Phaser.GameObjects.Image;
@@ -154,6 +159,7 @@ export default class CardBase extends Phaser.GameObjects.Container {
         /* Initial position */
         this.preZoomXPos = x;
         this.preZoomYPos = y;
+
 
         /* Position */
         this.x = x;
@@ -297,7 +303,7 @@ export default class CardBase extends Phaser.GameObjects.Container {
         this.back = scene.add.image(0, 0, "card_back");
 
         /* Frames */
-        this.frameDrained = scene.add.image(0, 0, "drained").setAlpha(0);
+        this.frameDrained = scene.add.image(0, 0, "drained_a").setAlpha(0);
 
         /* Add object to container */
         this.add(this.bg);
@@ -409,6 +415,10 @@ export default class CardBase extends Phaser.GameObjects.Container {
         this.isTrigger = true;
     }
 
+    bringToTop(child: Phaser.GameObjects.GameObject): this {
+        this.scene.children.bringToTop(this);
+    }
+
     click() {
 
         if (this.zoomStatus == CardZoomStatus.default && this.isTrigger == true) {
@@ -499,11 +509,11 @@ export default class CardBase extends Phaser.GameObjects.Container {
         this.frameDrained.setAlpha(0);
         this.scene.tweens.add({
             targets: this.frameDrained,
-            alpha: .5,
-            duration: 500,
-            yoyo: false,
+            alpha: 1,
+            duration: 1000,
+            yoyo: true,
             ease: "Power1.inOut",
-            repeat: 0
+            repeat: -1
         })
     }
 
@@ -514,7 +524,40 @@ export default class CardBase extends Phaser.GameObjects.Container {
             duration: 1000,
             yoyo: false,
             ease: "Power1.inOut",
-            repeat: 0
+            repeat: -1
         })
+    }
+
+    move(x:number, y: number) {
+        this.scene.tweens.add({
+            targets: this,
+            x: x,
+            y: y,
+            duration: 100,
+            yoyo: false,
+            ease: "Power1.inOut",
+            repeat: 0
+        })        
+    }
+
+    getBaseAttr() {
+        return this.baseAttr;
+    }
+
+    getShipAttr() {
+        return this.shipAttr;
+    }
+
+    getSize() {
+        console.log("CardBase scale: " + this.scale);
+        return [this.bg.width * this.scale, this.bg.height * this.scale];
+    }
+
+    updateZone(zone:GameZone)
+    {
+        this.currentZone = zone;
+        console.log("Card: " + this.baseAttr.title + 
+        " (" + this.baseAttr.id + ") is in zone: " + 
+        this.currentZone.name)
     }
 }
