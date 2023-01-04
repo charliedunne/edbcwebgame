@@ -153,7 +153,8 @@ export default class CardBase extends Phaser.GameObjects.Container {
         x: number,
         y: number,
         bBaseAttr: CardBaseAttr,
-        bShipAttr: CardShipAttr
+        bShipAttr: CardShipAttr,
+        zone: GameZone
     ) {
         /* Call the Base constructor */
         super(scene, x, y);
@@ -161,9 +162,8 @@ export default class CardBase extends Phaser.GameObjects.Container {
         /* Save scene */
         this.scene = scene;
 
-        /* Initial position */
-        this.preZoomXPos = x;
-        this.preZoomYPos = y;
+        /* Save initial zone */
+        this.currentZone = zone
 
         /* Position */
         this.x = x;
@@ -666,4 +666,10 @@ export default class CardBase extends Phaser.GameObjects.Container {
             " (" + this.baseAttr.id + ") is in zone: " +
             this.currentZone.name)
     }
+
+    getZone() : GameZone
+    {
+        return this.currentZone
+    }
+
 }

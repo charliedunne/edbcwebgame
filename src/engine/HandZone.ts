@@ -8,9 +8,6 @@ export enum User {
 
 export default class HandZone extends GameZone {
 
-    /* Scene */
-    //scene: Phaser.Scene;
-
     /* Number of cards in the zone */
     cards: CardBase [];
 
@@ -25,7 +22,7 @@ export default class HandZone extends GameZone {
 
         if (user == User.player)
         {
-            zoneData = [150, 910, 855, 210];
+            zoneData = [150, 1080, 855, 210];
         }
         else
         {

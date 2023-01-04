@@ -34,8 +34,19 @@ export default class Board extends Phaser.Scene {
         );
 
         this.input.on('drop', function (pointer: Phaser.Input.Pointer, gameObject: CardBase, dropZone: GameZone) {
-            dropZone.addCard(gameObject);
-            gameObject.updateZone(dropZone);
+            console.log('src zone: ' + gameObject.getZone().name)
+            console.log('dest zone: ' + dropZone.name)
+            if (gameObject.getZone() != dropZone)
+            {
+                console.log('Registering new zone')
+                dropZone.addCard(gameObject);
+                gameObject.updateZone(dropZone);
+            }
+            else
+            {
+                gameObject.move(gameObject.input.dragStartX, gameObject.input.dragStartY);
+            }
+
         }, this);
     }
 
@@ -245,7 +256,8 @@ export default class Board extends Phaser.Scene {
                     builder: "Lakon",
                     model: "Diamondback Scout",
                     role: [ShipRole.figher, ShipRole.explorer],
-                }
+                },
+                null,
             ).setScale(0.1);
 
             this.deck.push(tempCard);
@@ -279,7 +291,9 @@ export default class Board extends Phaser.Scene {
         dealCards.on('pointerdown', function(pointer: Phaser.Input.Pointer) {
             if (self.deck.length > 0)
             {
-                playerHand.addCard(self.deck.pop() as CardBase)
+                let card: CardBase = self.deck.pop()
+                playerHand.addCard(card)
+                card.updateZone(playerHand);
             }
         }, this)
 
