@@ -8,12 +8,12 @@ import { User } from "../engine/HandZone";
 
 export default class Board extends Phaser.Scene {
 
-    cards: CardBase[];
+    deck: CardBase[];
 
     constructor() {
         super("Elite Dangerous Battle Cards");
 
-        this.cards = new Array();
+        this.deck = new Array();
     }
 
     preload() {
@@ -24,59 +24,9 @@ export default class Board extends Phaser.Scene {
     handleEvents() {
         this.input.mouse.disableContextMenu();
 
-
-        /*        
-       
-               this.input.on(
-                   "gameobjectover",
-                   function (pointer: Phaser.Input.Pointer, object: CardBase) {
-                       object.hover();
-       
-                   }, this
-               );
-       
-               this.input.on(
-                   "gameobjectout",
-                   function (pointer: Phaser.Input.Pointer, object: CardBase) {
-                       object.unhover();
-                   }, this
-               );
-       
-       
-               this.input.on(
-                   "gameobjectdown",
-                   function (pointer, object: CardBase) {
-                       object.clickDown()
-                   },
-                   this
-               );
-       
-               this.input.on(
-                   "gameobjectup",
-                   function (pointer: Phaser.Input.Pointer, object: CardBase) {
-                       if (pointer.rightButtonReleased()) {
-                           object.flip();
-                       } else {
-                           console.log("right button");
-                           object.clickUp();
-                       }
-                   },
-                   this
-               );
-       
-               this.input.on(
-                   "drag",
-                   function (pointer, object: CardBase, dragX, dragY) {
-                       object.x = dragX;
-                       object.y = dragY;
-                       object.drag(dragX, dragY);
-                   },
-                   this
-               );
-       */
         this.input.on(
             "dragend",
-            function (pointer: Phaser.Input.Pointer, object: CardBase, dropped:Boolean) {
+            function (pointer: Phaser.Input.Pointer, object: CardBase, dropped: Boolean) {
                 if (!dropped) {
                     object.move(object.input.dragStartX, object.input.dragStartY);
                 }
@@ -298,7 +248,7 @@ export default class Board extends Phaser.Scene {
                 }
             ).setScale(0.1);
 
-            this.cards.push(tempCard);
+            this.deck.push(tempCard);
         }
 
         /*          this.cards.push(card);
@@ -314,48 +264,29 @@ export default class Board extends Phaser.Scene {
         this.input.mouse.disableContextMenu();
 
 
-
-
-
-        /*         let deck = new Deck(this);
-        
-                deck.pushCard(card);
-                deck.pushCard(card2);
-                deck.pushCard(card3);
-                deck.pushCard(card4);
-                deck.pushCard(card5);
-                deck.pushCard(card6);
-                deck.pushCard(card7);
-                deck.pushCard(card8);
-        
-                console.log("deck :" + deck.getLength());
-        
-                for (let i = 0; i < deck.getLength(); ++i) {
-                    console.log(deck.getCardById(i).getBaseAttr().id);
-                }
-        
-                deck.shuffleDeck()
-               
-                console.log("deck again:");
-                for (let i = 0; i < deck.getLength(); ++i) {
-                    console.log(deck.getCardById(i).getBaseAttr().id);
-                }
-        
-                deck.shuffleDeck()
-        
-                const mycard = deck.popCard();
-                console.log("Last:")
-               
-                for (let i = 0; i < deck.getLength(); ++i) {
-                    console.log(deck.getCardById(i).getBaseAttr().id);
-                } */
-
         let dropZone = new GameZone(this, 42, 100, 595, 498, "enemy_left");
 
         let playerHand = new HandZone(this, User.player);
 
+        /** @todo Add buttons */
+        let dealCards = this.add.text(1800, 300, ['DEAL'])
+            .setFontSize(22)
+            .setColor('#ff00ff')
+            .setInteractive()
+
+        let self = this
+
+        dealCards.on('pointerdown', function(pointer: Phaser.Input.Pointer) {
+            if (self.deck.length > 0)
+            {
+                playerHand.addCard(self.deck.pop() as CardBase)
+            }
+        }, this)
+
         this.handleEvents()
     }
+
+
 
     update() {
 
