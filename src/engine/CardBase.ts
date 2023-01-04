@@ -91,6 +91,8 @@ class CardVisuals {
     }
 }
 
+let cardOrder: number = 0;
+
 export default class CardBase extends Phaser.GameObjects.Container {
     /* --- Private members --- */
 
@@ -98,8 +100,11 @@ export default class CardBase extends Phaser.GameObjects.Container {
     scene: Phaser.Scene;
 
     /* Position */
-    preZoomXPos: number;
-    preZoomYPos: number;
+    xPosOnClick: number;
+    yPosOnClick: number;
+
+    /* Depth */
+    depthOnClick: number
 
     /* Dragging flag */
     dragging: Boolean;
@@ -160,10 +165,14 @@ export default class CardBase extends Phaser.GameObjects.Container {
         this.preZoomXPos = x;
         this.preZoomYPos = y;
 
-
         /* Position */
         this.x = x;
         this.y = y;
+        this.xPosOnClick = this.x
+        this.yPosOnClick = this.y
+
+        /* Depth */
+        this.depth = cardOrder++
 
         /* Dragging flag */
         this.dragging = false;
@@ -184,6 +193,7 @@ export default class CardBase extends Phaser.GameObjects.Container {
             bBaseAttr.faction,
             bBaseAttr.set
         );
+
         this.bg = scene.add.image(0, 0, visuals.bg);
 
         /* Chose icon */
@@ -331,6 +341,21 @@ export default class CardBase extends Phaser.GameObjects.Container {
         /* Add the container to the scene */
         scene.add.existing(this);
 
+        /* Set-up behaviour and events */
+        this.setUpEvents();
+
+        //this.on("clicked", this.click, this);
+        //this.on('dragging', this.drag, this);
+
+        console.log("New card id [" + this.baseAttr.id + "], depth: " + this.depth)
+
+    }
+
+    setUpEvents() {
+
+        /* Create self reference */
+        let self = this
+
         /* Set container as interactive */
         this.setInteractive(
             new Phaser.Geom.Rectangle(
@@ -340,13 +365,40 @@ export default class CardBase extends Phaser.GameObjects.Container {
                 this.bg.height
             ),
             Phaser.Geom.Rectangle.Contains
-        );
+        )
 
         /* Make it Draggable */
         this.scene.input.setDraggable(this);
 
-        this.on("clicked", this.click, this);
-        //this.on('dragging', this.drag, this);
+        // ON CLICK DOWN 
+        this.on('pointerdown', function (pointer: Phaser.Input.Pointer, object: CardBase) {
+            //console.log("click_down on id: " + self.baseAttr.id)
+            self.clickDown()
+        }, this)
+
+        // ON CLICK UP 
+        this.on('pointerup', function (pointer: Phaser.Input.Pointer, object: CardBase) {
+            //console.log("click_up on id: " + self.baseAttr.id)
+            self.clickUp(pointer)
+        }, this)
+
+        /*         // ON HOVER IN 
+                this.on('pointerover', function (pointer: Phaser.Input.Pointer, object: CardBase) {
+                    console.log("pointerover on id: " + self.baseAttr.id)
+                    self.hover()
+                }, this)
+        
+                // ON HOVER OUT 
+                this.on('pointerout', function (pointer: Phaser.Input.Pointer, object: CardBase) {
+                    //console.log("pointerout on id: " + self.baseAttr.id)
+                    self.unhover()
+                }, this) */
+
+        /* DRAG START */
+        this.on('drag', function (pointer: Phaser.Input.Pointer, object: CardBase) {
+            //console.log('dragging id: ' + self.baseAttr.id)
+            self.drag(pointer)
+        }, this)
     }
 
     flip() {
@@ -403,11 +455,21 @@ export default class CardBase extends Phaser.GameObjects.Container {
         timeline.play();
     }
 
-    drag(newX: number, newY: number) {
-        console.log("drag");
-        this.isTrigger = false;
-        this.preZoomXPos = newX;
-        this.preZoomYPos = newY;
+    drag(pointer: Phaser.Input.Pointer) {
+
+        if (this.zoomStatus === CardZoomStatus.default) {
+
+            /* Notify that the card is being dragging */
+            this.dragging = true;
+
+            /* Bring to top */
+            this.scene.children.bringToTop(this);
+
+            /* Update the position of the card */
+            this.x = pointer.x
+            this.y = pointer.y
+            console.log(this.depth)
+        }
     }
 
     trigger() {
@@ -419,90 +481,135 @@ export default class CardBase extends Phaser.GameObjects.Container {
         this.scene.children.bringToTop(this);
     }
 
-    click() {
+    clickDown() {
 
-        if (this.zoomStatus == CardZoomStatus.default && this.isTrigger == true) {
-            /* Bring to top */
-            this.scene.children.bringToTop(this);
+        if (this.zoomStatus === CardZoomStatus.default)
+        {
+            this.xPosOnClick = this.x
+            this.yPosOnClick = this.y
+        }
 
-            this.preZoomXPos = this.x;
-            this.preZoomYPos = this.y;
+        this.depthOnClick = this.depth
 
-            this.scene.tweens.add({
-                targets: this,
-                x: this.scene.cameras.main.centerX,
-                y: this.scene.cameras.main.centerY,
-                scale: 0.55,
-                duration: 300,
-                ease: "Cubic.inOut",
-                yoyo: false,
-                repeat: 0,
-            });
+        if (this.zoomStatus === CardZoomStatus.hover) {
+            this.unhover()
+        }
+    }
 
-            /* Change zoomStatus */
-            this.zoomStatus = CardZoomStatus.click;
-            this.isTrigger = false;
-        } else if (
-            this.zoomStatus == CardZoomStatus.click &&
-            this.isTrigger == true
-        ) {
-            this.scene.tweens.add({
-                targets: this,
-                x: this.preZoomXPos,
-                y: this.preZoomYPos,
-                scale: 0.1,
-                duration: 300,
-                ease: "Cubic.inOut",
-                yoyo: false,
-                repeat: 0,
-            });
+    clickUp(pointer: Phaser.Input.Pointer) {
 
-            /* Change zoomStatus */
-            this.zoomStatus = CardZoomStatus.default;
-            this.isTrigger = false;
+        if (pointer.rightButtonReleased()) {
+            this.flip()
+        }
+        else {
+
+            if (!this.dragging) {
+
+                if ((this.zoomStatus == CardZoomStatus.default) || (this.zoomStatus === CardZoomStatus.hover)) {
+
+                    /* Bring to top */
+                    this.scene.children.bringToTop(this)
+
+                    this.scene.tweens.add({
+                        targets: this,
+                        x: this.scene.cameras.main.centerX,
+                        y: this.scene.cameras.main.centerY,
+                        scale: 0.55,
+                        duration: 150,
+                        ease: "Cubic.inOut",
+                        yoyo: false,
+                        repeat: 0,
+                    });
+
+                    /* Change zoomStatus */
+                    this.zoomStatus = CardZoomStatus.click;
+
+                } else if (this.zoomStatus == CardZoomStatus.click) {
+                    this.scene.tweens.add({
+                        targets: this,
+                        x: this.xPosOnClick,
+                        y: this.yPosOnClick,
+                        scale: 0.1,
+                        duration: 150,
+                        ease: "Cubic.inOut",
+                        yoyo: false,
+                        repeat: 0,
+                    });
+
+                    /* Change zoomStatus */
+                    this.zoomStatus = CardZoomStatus.default;
+
+                    /* Go back to the previous position */
+                    this.depth = this.depthOnClick
+                    console.log('go back to depth: ' + this.depth)
+                }
+            }
+            else {
+
+                /* Stop draggin notify */
+                this.dragging = false
+
+                /* Update card position */
+               /*  this.xPosOnClick = this.x
+                this.yPosOnClick = this.y */
+            }
         }
     }
 
     hover() {
 
-        /* Bring to top */
-        this.scene.children.bringToTop(this);
+        if (this.zoomStatus === CardZoomStatus.default) {
 
-        this.preZoomXPos = this.x;
-        this.preZoomYPos = this.y;
+            /* Save old position */
+            this.xPosOnClick = this.x
+            this.yPosOnClick = this.y
 
-        this.scene.tweens.add({
-            targets: this,
-            x: this.x + this.bg.width/2*this.scale,
-            y: this.y - this.bg.height/2*this.scale,
-            scale: this.scale * 2,
-            duration: 100,
-            ease: "Cubic.inOut",
-            yoyo: false,
-            repeat: 0,
-/*             onComplete: () => {
-                this.scene.tweens.add({
-                    targets: this,
-                    x: this.preZoomXPos,
-                    y: this.preZoomYPos,
-                    scale: 0.1,
-                    duration: 100,
-                    ease: "Cubic.inOut",
-                })
-            }, */
+            /* Bring to top */
+            this.scene.children.moveUp(this);
 
-        })
+            /* Set the scale for the zoom on hover */
+            let scale: number = 2.5
+
+            /* Set the new center position after scale */
+            let xOffset: number = (this.bg.width * this.scale * scale) / 2 - (this.bg.width * this.scale) / 2
+            let yOffset: number = (this.bg.height * this.scale * scale) / 2 - (this.bg.height * this.scale) / 2
+
+            this.scene.tweens.add({
+                targets: this,
+                x: this.x + xOffset,
+                y: this.y - yOffset,
+                scale: this.scale * scale,
+                duration: 25,
+                ease: "Cubic.inOut",
+                yoyo: false,
+                repeat: 0,
+            })
+
+            this.zoomStatus = CardZoomStatus.hover
+        }
     }
 
     unhover() {
-        this.scene.tweens.add({
-            targets: this,
-            x: this.preZoomXPos,
-            y: this.preZoomYPos,
-            scale: 0.1,
-            duration: 100,
-            ease: "Cubic.inOut"
-        })
+
+        if (this.zoomStatus === CardZoomStatus.hover) {
+            let scale: number = 1 / 2.5
+
+            let xOffset: number = (this.bg.width * this.scale) / 2 - (this.bg.width * this.scale * scale) / 2
+            let yOffset: number = (this.bg.height * this.scale) / 2 - (this.bg.height * this.scale * scale) / 2
+
+            this.scene.tweens.add({
+                targets: this,
+                x: this.xPosOnClick,
+                y: this.yPosOnClick,
+                scale: 0.1,
+                duration: 25,
+                ease: "Cubic.inOut"
+            })
+
+            this.zoomStatus = CardZoomStatus.default
+
+            this.scene.children.moveDown(this);
+        }
     }
 
     drain() {
@@ -528,7 +635,7 @@ export default class CardBase extends Phaser.GameObjects.Container {
         })
     }
 
-    move(x:number, y: number) {
+    move(x: number, y: number) {
         this.scene.tweens.add({
             targets: this,
             x: x,
@@ -537,7 +644,7 @@ export default class CardBase extends Phaser.GameObjects.Container {
             yoyo: false,
             ease: "Power1.inOut",
             repeat: 0
-        })        
+        })
     }
 
     getBaseAttr() {
@@ -553,11 +660,10 @@ export default class CardBase extends Phaser.GameObjects.Container {
         return [this.bg.width * this.scale, this.bg.height * this.scale];
     }
 
-    updateZone(zone:GameZone)
-    {
+    updateZone(zone: GameZone) {
         this.currentZone = zone;
-        console.log("Card: " + this.baseAttr.title + 
-        " (" + this.baseAttr.id + ") is in zone: " + 
-        this.currentZone.name)
+        console.log("Card: " + this.baseAttr.title +
+            " (" + this.baseAttr.id + ") is in zone: " +
+            this.currentZone.name)
     }
 }
