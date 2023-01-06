@@ -1,5 +1,11 @@
 import GameZone from "../engine/GameZone";
 
+export interface CardSize
+{
+    width: number
+    height: number
+}
+
 export enum CardType {
     none = "none",
     ship = "ship",
@@ -237,7 +243,7 @@ export default class CardBase extends Phaser.GameObjects.Container {
                 85
             )
             .setOrigin(0, 0);
-        this.title.setTint(CardColor[bBaseAttr.faction]);
+        this.title.setTint(CardColor[bBaseAttr.faction] as number);
 
         /* Ship model details */
         if (bBaseAttr.type == CardType.ship) {
@@ -468,19 +474,8 @@ export default class CardBase extends Phaser.GameObjects.Container {
             /* Update the position of the card */
             this.x = pointer.x
             this.y = pointer.y
-            console.log(this.depth)
         }
     }
-
-    trigger() {
-        console.log("trigger");
-        this.isTrigger = true;
-    }
-
-    bringToTop(child: Phaser.GameObjects.GameObject): this {
-        this.scene.children.bringToTop(this);
-    }
-
     clickDown() {
 
         if (this.zoomStatus === CardZoomStatus.default)
@@ -655,9 +650,11 @@ export default class CardBase extends Phaser.GameObjects.Container {
         return this.shipAttr;
     }
 
-    getSize() {
-        console.log("CardBase scale: " + this.scale);
-        return [this.bg.width * this.scale, this.bg.height * this.scale];
+    getSize() : CardSize {
+        let size: CardSize = {width: this.bg.width * this.scale,
+            height: this.bg.height * this.scale}
+
+        return size
     }
 
     updateZone(zone: GameZone) {

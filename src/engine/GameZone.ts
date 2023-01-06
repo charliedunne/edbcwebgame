@@ -5,8 +5,8 @@ export default class GameZone extends Phaser.GameObjects.Zone {
     /* Scene */
     //scene: Phaser.Scene;
 
-    /* Number of cards in the zone */
-    cards: number;
+    /* Cards avaialbe in zone */
+    cards: CardBase[];
 
     /* Debug lines */
     debug: boolean;
@@ -41,17 +41,17 @@ export default class GameZone extends Phaser.GameObjects.Zone {
         }
 
         /* Initialize cards number */
-        this.cards = 0;
+        this.cards = [];
     }
 
     addCard(card: CardBase) {
-        let xPos: number = this.x + ((card.getSize()[0] / 2) + 15) +
-            (card.getSize()[0] + 5) * (this.cards % 4);
-        let yPos: number = this.y + (card.getSize()[1] / 2) + 25;
 
-        if (this.cards >= 4)
-        {
-            yPos = yPos + card.getSize()[1] + 15;
+        let xPos: number = this.x + ((card.getSize().width / 2) + 15) +
+            (card.getSize().width + 5) * (this.cards.length % 4);
+        let yPos: number = this.y + (card.getSize().height / 2) + 25;
+
+        if (this.cards.length >= 4) {
+            yPos = yPos + card.getSize().height + 15;
         }
 
         this.scene.tweens.add({
@@ -65,11 +65,29 @@ export default class GameZone extends Phaser.GameObjects.Zone {
         })
 
         //card.setPosition(xPos, yPos);
-        this.cards++;
+        this.cards.push(card);
     }
 
-    removeCard() {
-        this.cards--;
+    removeCard(card: CardBase) {
+
+        let index = 999
+
+        for (let i = 0; i < this.cards.length; ++i) {
+            if (this.cards[i].baseAttr.id === card.baseAttr.id) {
+                index = i;
+                break;
+            }
+        }
+        console.log('remove card index: ' + index)
+
+        this.cards.splice(index, 1)
+
+        /* Move all the cards one position left */
+        for (let i = index; i < this.cards.length; ++i)
+        {
+            /** @todo Create abstract function to move card one position left */
+        }
+
         console.log("Zone cards: " + this.cards);
     }
 

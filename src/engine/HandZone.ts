@@ -65,8 +65,8 @@ export default class HandZone extends GameZone {
         let cardSeparation = 5;
         let xPos: number = 0;
         let yPos: number = 0;
-        const cardSizeX: number = card.getSize()[0];
-        const cardSizeY: number = card.getSize()[1];
+        const cardSizeX: number = card.getSize().width;
+        const cardSizeY: number = card.getSize().height;
 
         if (this.cards.length == 0)
         {
@@ -76,45 +76,14 @@ export default class HandZone extends GameZone {
         {
             xPos = this.cards[this.cards.length-1].x + cardSizeX*.575;
         }
-
-/*         else
-        {
-            let offset: number = 25;
-            // Move rest of the cards
-            for (let i = 1; i < this.cards.length; ++i)
-            {
-                let tempOffset: number = offset*i;
-                this.cards[i].setX(this.cards[i].x - tempOffset);
-            }  
-            
-            //xPos = this.cards[this.cards.length-1].x + cardSizeX + 5 - (offset*(this.cards.length-5));
-        } */
-       
+      
         yPos = this.y + cardSizeY/2;
-
-
-
-/*         if (this.cards.length >= 6)
-        {
-            // Reduce separation
-            cardSeparation -= 15;
-
-            // Move rest of the cards
-            for (let i = 1; i < this.cards.length; ++i)
-            {
-                this.cards[i].setX(this.cards[i].x - cardSeparation*(i));
-            }
-        } */
-
-/*         let xPos: number = this.x + ((card.getSize()[0] / 2) + 5) +
-            (card.getSize()[0] + cardSeparation) * (this.cards.length);
-        let yPos: number = this.y + (card.getSize()[1] / 2) + 5; */
 
         this.scene.tweens.add({
             targets: card,
             x: xPos,
             y: yPos,
-            duration: 100,
+            duration: 300,
             yoyo: false,
             ease: "Power1.inOut",
             repeat: 0
@@ -124,8 +93,4 @@ export default class HandZone extends GameZone {
         this.cards.push(card)
     }
 
-    removeCard() {
-        this.cards.pop()
-        console.log("Zone cards: " + this.cards);
-    }
 }

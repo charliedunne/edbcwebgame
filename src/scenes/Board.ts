@@ -5,6 +5,7 @@ import Deck from "../engine/Deck";
 import GameZone from "../engine/GameZone";
 import HandZone from "../engine/HandZone";
 import { User } from "../engine/HandZone";
+import { EdbcGameZone } from "../engine/EdbcGameZone";
 
 export default class Board extends Phaser.Scene {
 
@@ -38,6 +39,7 @@ export default class Board extends Phaser.Scene {
             console.log('dest zone: ' + dropZone.name)
             if (gameObject.getZone() != dropZone)
             {
+                gameObject.getZone().removeCard(gameObject)
                 console.log('Registering new zone')
                 dropZone.addCard(gameObject);
                 gameObject.updateZone(dropZone);
@@ -236,10 +238,29 @@ export default class Board extends Phaser.Scene {
         
                 card8.setScale(0.1);
          */
+
+
+        /*          this.cards.push(card);
+                this.cards.push(card2);
+                this.cards.push(card3);
+                this.cards.push(card4);
+                this.cards.push(card5);
+                this.cards.push(card6);
+                this.cards.push(card7);
+                this.cards.push(card8);  */
+
+
+        this.input.mouse.disableContextMenu();
+
+        let deckZone = new EdbcGameZone(this, -1000, 300, 200, 210, "deck")
+        let dropZone = new EdbcGameZone(this, 42, 100, 595, 498, "enemy_left");
+        let playerHand = new HandZone(this, User.player);
+
+        /* Create Sample cards */
         for (let i = 9; i < 20; ++i) {
             let tempCard = new CardBase(
                 this,
-                800,
+                -500,
                 600,
                 {
                     id: i,
@@ -257,28 +278,13 @@ export default class Board extends Phaser.Scene {
                     model: "Diamondback Scout",
                     role: [ShipRole.figher, ShipRole.explorer],
                 },
-                null,
-            ).setScale(0.1);
+                deckZone,
+            ).setScale(0.1)
 
-            this.deck.push(tempCard);
+            deckZone.addCard(tempCard)
+            this.deck.push(tempCard)
         }
 
-        /*          this.cards.push(card);
-                this.cards.push(card2);
-                this.cards.push(card3);
-                this.cards.push(card4);
-                this.cards.push(card5);
-                this.cards.push(card6);
-                this.cards.push(card7);
-                this.cards.push(card8);  */
-
-
-        this.input.mouse.disableContextMenu();
-
-
-        let dropZone = new GameZone(this, 42, 100, 595, 498, "enemy_left");
-
-        let playerHand = new HandZone(this, User.player);
 
         /** @todo Add buttons */
         let dealCards = this.add.text(1800, 300, ['DEAL'])
