@@ -6,6 +6,7 @@ import GameZone from "../engine/GameZone";
 import HandZone from "../engine/HandZone";
 import { User } from "../engine/HandZone";
 import { EdbcGameZone } from "../engine/EdbcGameZone";
+import { EdbcHandZone } from "../engine/EdbcHandZone";
 
 export default class Board extends Phaser.Scene {
 
@@ -45,6 +46,7 @@ export default class Board extends Phaser.Scene {
             }
             else {
                 gameObject.move(gameObject.input.dragStartX, gameObject.input.dragStartY);
+                dropZone.reasignDepth()
             }
 
         }, this);
@@ -275,17 +277,20 @@ export default class Board extends Phaser.Scene {
             ).setScale(0.1)
 
             this.deck.push(tempCard)
-        }   
+        }
 
         let deckZone = new EdbcGameZone(this, -1000, 300, 200, 210, "deck",
             this.deck[0].getSize(),
-            {rows: 1, columns: 1})
+            { rows: 1, columns: 1 })
 
         let dropZone = new EdbcGameZone(this, 42, 100, 595, 498, "enemy_left",
             this.deck[0].getSize(),
-            {rows: 2, columns: 4})
-            
-        let playerHand = new HandZone(this, User.player);
+            { rows: 2, columns: 4 })
+
+        let playerHand = new EdbcHandZone(this, 150, 1080, 1000, 210, "player_hand",
+            this.deck[0].getSize(),
+            { rows: 1, columns: 10 })
+        // let playerHand = new HandZone(this, User.player);
 
 
         /** @todo Add buttons */

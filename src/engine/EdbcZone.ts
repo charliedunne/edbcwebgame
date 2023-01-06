@@ -19,8 +19,6 @@ interface Size {
     height: number
 }
 
-
-
 /**
  * Hand movements speed
  */
@@ -189,6 +187,17 @@ export abstract class EdbcZone extends Phaser.GameObjects.Zone {
                 ease: "Power1.inOut",
                 repeat: 0
             })
+        }
+    }
+
+    /**
+     * This function is used to reorganize the depth of all the cards as
+     * it is defined in the positions definition.
+     */
+    reasignDepth() : void {
+        for (let i = 0; i < this.cards.length; ++i)
+        {
+            this.cards[i].setDepth(this.positions[i].depth)
         }
     }
 
