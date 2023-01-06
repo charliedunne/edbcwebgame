@@ -37,15 +37,13 @@ export default class Board extends Phaser.Scene {
         this.input.on('drop', function (pointer: Phaser.Input.Pointer, gameObject: CardBase, dropZone: GameZone) {
             console.log('src zone: ' + gameObject.getZone().name)
             console.log('dest zone: ' + dropZone.name)
-            if (gameObject.getZone() != dropZone)
-            {
+            if (gameObject.getZone() != dropZone) {
                 gameObject.getZone().removeCard(gameObject)
                 console.log('Registering new zone')
                 dropZone.addCard(gameObject);
                 gameObject.updateZone(dropZone);
             }
-            else
-            {
+            else {
                 gameObject.move(gameObject.input.dragStartX, gameObject.input.dragStartY);
             }
 
@@ -252,10 +250,6 @@ export default class Board extends Phaser.Scene {
 
         this.input.mouse.disableContextMenu();
 
-        let deckZone = new EdbcGameZone(this, -1000, 300, 200, 210, "deck")
-        let dropZone = new EdbcGameZone(this, 42, 100, 595, 498, "enemy_left");
-        let playerHand = new HandZone(this, User.player);
-
         /* Create Sample cards */
         for (let i = 9; i < 20; ++i) {
             let tempCard = new CardBase(
@@ -278,12 +272,20 @@ export default class Board extends Phaser.Scene {
                     model: "Diamondback Scout",
                     role: [ShipRole.figher, ShipRole.explorer],
                 },
-                deckZone,
             ).setScale(0.1)
 
-            deckZone.addCard(tempCard)
             this.deck.push(tempCard)
-        }
+        }   
+
+        let deckZone = new EdbcGameZone(this, -1000, 300, 200, 210, "deck",
+            this.deck[0].getSize(),
+            {rows: 1, columns: 1})
+
+        let dropZone = new EdbcGameZone(this, 42, 100, 595, 498, "enemy_left",
+            this.deck[0].getSize(),
+            {rows: 2, columns: 4})
+            
+        let playerHand = new HandZone(this, User.player);
 
 
         /** @todo Add buttons */
@@ -294,9 +296,8 @@ export default class Board extends Phaser.Scene {
 
         let self = this
 
-        dealCards.on('pointerdown', function(pointer: Phaser.Input.Pointer) {
-            if (self.deck.length > 0)
-            {
+        dealCards.on('pointerdown', function (pointer: Phaser.Input.Pointer) {
+            if (self.deck.length > 0) {
                 let card: CardBase = self.deck.pop()
                 playerHand.addCard(card)
                 card.updateZone(playerHand);

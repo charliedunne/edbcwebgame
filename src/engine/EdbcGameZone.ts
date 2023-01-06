@@ -1,5 +1,5 @@
-import CardBase from "./CardBase";
-import { EdbcZone, Position } from "./EdbcZone";
+import CardBase, { CardSize } from "./CardBase";
+import { EdbcZone, Position, ZoneLayout } from "./EdbcZone";
 
 export class EdbcGameZone extends EdbcZone {
 
@@ -19,11 +19,54 @@ export class EdbcGameZone extends EdbcZone {
         y: number,
         width: number,
         height: number,
-        name: string
+        name: string,
+        cardSize: CardSize,
+        layout: ZoneLayout
     ) {
         // Call Base constructor
-        super(scene, x, y, width, height, name)
+        super(scene, x, y, width, height, name, cardSize, layout)
     }
+
+    /**
+     * This abstract function is defined for every kind of zone and define
+     * the geometry of the Zone, It shall set the position of every single
+     * card included in the zone at initialization.
+     * 
+     * @param cardSize Size of the card (in px) inside the zone
+     * @param layout Definition of the zone geometry, it will define the
+     * number of rows and columns, note that if the number specified is 0
+     * it means that there is no limit in the number or cards and the 
+     * position will be updated dynamically
+     */
+    setCardsPositions(cardSize: CardSize, layout: ZoneLayout): void {
+
+        if (layout.columns > 0 && layout.rows > 0) {
+            let counter: number = 0
+            for (let j = 0; j < layout.rows; ++j) {
+                for (let i = 0; i < layout.columns; ++i) {
+
+                    // Position to calculate
+                    let position: Position = { x: 0, y: 0, depth: 0 }
+
+                    // Compute Position
+                    position.x = this.x + ((cardSize.width / 2) + 15) +
+                        (cardSize.width + 5) * i;
+
+                    position.y = this.y + (cardSize.height / 2) + 25 + cardSize.height * j;
+
+                    // Add computed position to the internal array
+                    this.positions.push(position)
+
+                    console.log('<' + this.getName() + '> Position for [' + counter++ + '] = ' + position.x + ', ' + position.y)
+                }
+            }
+        }
+        else {
+            /** @todo To be designed */
+            throw Error('Functionality not implemented yet')
+        }
+    }
+
 
     /**
      * Implementation of abstract method.
@@ -36,12 +79,12 @@ export class EdbcGameZone extends EdbcZone {
     calculateNextCardPosition(card: CardBase): Position {
 
         // Position to calculate
-        let position: Position = {x: 0, y: 0, depth: 0}
+        let position: Position = { x: 0, y: 0, depth: 0 }
 
         // Compute Position
         position.x = this.x + ((card.getSize().width / 2) + 15) +
-        (card.getSize().width + 5) * (this.cards.length % 4);
-   
+            (card.getSize().width + 5) * (this.cards.length % 4);
+
         position.y = this.y + (card.getSize().height / 2) + 25;
 
         if (this.cards.length >= 4) {
@@ -49,9 +92,5 @@ export class EdbcGameZone extends EdbcZone {
         }
 
         return position
-    }
-
-    rearrangeCards(): void {
-        
     }
 }
