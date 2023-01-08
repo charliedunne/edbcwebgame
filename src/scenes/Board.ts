@@ -2,9 +2,6 @@ import { edbc_preload } from "./AssetsPreload";
 import CardBase, { CardZoomStatus } from "../engine/CardBase";
 import { CardType, CardFaction, CardSet, ShipRole } from "../engine/CardBase";
 import Deck from "../engine/Deck";
-import GameZone from "../engine/GameZone";
-import HandZone from "../engine/HandZone";
-import { User } from "../engine/HandZone";
 import { EdbcGameZone } from "../engine/EdbcGameZone";
 import { EdbcHandZone } from "../engine/EdbcHandZone";
 
@@ -325,7 +322,7 @@ export default class Board extends Phaser.Scene {
 
         dealCards.on('pointerdown', function (pointer: Phaser.Input.Pointer) {
             if (self.deck.length > 0) {
-                let card: CardBase = self.deck.pop()
+                let card: CardBase = <CardBase>self.deck.pop()
                 playerHand.addCard(card)
                 card.updateZone(playerHand);
             }

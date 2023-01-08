@@ -67,7 +67,7 @@ type CardShipAttr = {
     speed: number;
     builder: string;
     model: string;
-    role: ShipRole;
+    role: ShipRole[];
 };
 
 const padLeft = (
@@ -189,6 +189,9 @@ export default class CardBase extends Phaser.GameObjects.Container {
         /* Save data */
         this.baseAttr = bBaseAttr;
         this.shipAttr = bShipAttr;
+
+        /* Initialize internal objects */
+        /** @todo Initialize phaser object */       
 
         /* -- Set Card Visuals -- */
 
