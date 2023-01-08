@@ -110,14 +110,6 @@ export abstract class EdbcZone extends Phaser.GameObjects.Zone {
     abstract setCardsPositions(cardSize: CardSize, layout: ZoneLayout): void
 
     /**
-     * Calculate the absolute position of next card
-     * 
-     * @param card Card to be added (include to check the dimensions)
-     * @return Position Position of the new card
-     */
-    abstract calculateNextCardPosition(card: CardBase): Position
-
-    /**
      * Add a new card to the zone
      * 
      * @param card card to add
