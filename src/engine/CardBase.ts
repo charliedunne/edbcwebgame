@@ -37,7 +37,7 @@ export enum ShipRole {
     bountyHunter = "Bounty Hunter",
 }
 
-enum CardZoomStatus {
+export enum CardZoomStatus {
     default,
     hover,
     click,
@@ -517,6 +517,8 @@ export default class CardBase extends Phaser.GameObjects.Container {
 
                     /* Change zoomStatus */
                     this.zoomStatus = CardZoomStatus.click;
+
+                    /** @todo Make dynamic buttons for the card */
 
                 } else if (this.zoomStatus == CardZoomStatus.click) {
                     this.scene.tweens.add({
