@@ -52,7 +52,7 @@ export class EdbcGameZone extends EdbcZone {
                     position.x = this.x + ((cardSize.width / 2) + 15) +
                         (cardSize.width + 5) * i;
 
-                    position.y = this.y + (cardSize.height / 2) + 25 + cardSize.height * j;
+                    position.y = this.y + (cardSize.height / 2) + 10 + (cardSize.height+5) * j;
 
                     // Add computed position to the internal array
                     this.positions.push(position)

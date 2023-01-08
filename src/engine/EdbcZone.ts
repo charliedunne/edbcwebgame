@@ -69,7 +69,7 @@ export abstract class EdbcZone extends Phaser.GameObjects.Zone {
         this.zoneName = name
 
         // Set debug flag (initially disabled)
-        this.debug = true
+        this.debug = false
 
         // Create the drop zone
         this.setRectangleDropZone(width, height).setOrigin(0, 0);

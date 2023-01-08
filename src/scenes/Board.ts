@@ -1,5 +1,5 @@
 import { edbc_preload } from "./AssetsPreload";
-import CardBase from "../engine/CardBase";
+import CardBase, { CardZoomStatus } from "../engine/CardBase";
 import { CardType, CardFaction, CardSet, ShipRole } from "../engine/CardBase";
 import Deck from "../engine/Deck";
 import GameZone from "../engine/GameZone";
@@ -36,17 +36,18 @@ export default class Board extends Phaser.Scene {
         );
 
         this.input.on('drop', function (pointer: Phaser.Input.Pointer, gameObject: CardBase, dropZone: GameZone) {
-            console.log('src zone: ' + gameObject.getZone().name)
-            console.log('dest zone: ' + dropZone.name)
-            if (gameObject.getZone() != dropZone) {
-                gameObject.getZone().removeCard(gameObject)
-                console.log('Registering new zone')
-                dropZone.addCard(gameObject);
-                gameObject.updateZone(dropZone);
-            }
-            else {
-                gameObject.move(gameObject.input.dragStartX, gameObject.input.dragStartY);
-                dropZone.reasignDepth()
+
+            if (gameObject.zoomStatus == CardZoomStatus.default) {
+                if (gameObject.getZone() != dropZone) {
+                    gameObject.getZone().removeCard(gameObject)
+                    console.log('Registering new zone')
+                    dropZone.addCard(gameObject);
+                    gameObject.updateZone(dropZone);
+                }
+                else {
+                    gameObject.move(gameObject.input.dragStartX, gameObject.input.dragStartY);
+                    dropZone.reasignDepth()
+                }
             }
 
         }, this);
@@ -283,9 +284,30 @@ export default class Board extends Phaser.Scene {
             this.deck[0].getSize(),
             { rows: 1, columns: 1 })
 
-        let dropZone = new EdbcGameZone(this, 42, 100, 595, 498, "enemy_left",
+        let enemyDropZoneLeft = new EdbcGameZone(this, 42, 130, 595, 410, "enemy_left",
             this.deck[0].getSize(),
             { rows: 2, columns: 4 })
+
+        let enemyDropZoneCenter = new EdbcGameZone(this, 664, 130, 595, 410, "enemy_center",
+            this.deck[0].getSize(),
+            { rows: 2, columns: 4 })
+
+        let enemyDropZoneRight = new EdbcGameZone(this, 1284, 130, 595, 410, "enemy_right",
+            this.deck[0].getSize(),
+            { rows: 2, columns: 4 })
+
+        let playerDropZoneLeft = new EdbcGameZone(this, 42, 650, 595, 410, "player_left",
+            this.deck[0].getSize(),
+            { rows: 2, columns: 4 })
+
+        let playerDropZoneCenter = new EdbcGameZone(this, 664, 650, 595, 410, "player_center",
+            this.deck[0].getSize(),
+            { rows: 2, columns: 4 })
+
+        let playerDropZoneRight = new EdbcGameZone(this, 1284, 650, 595, 410, "player_right",
+            this.deck[0].getSize(),
+            { rows: 2, columns: 4 })
+
 
         let playerHand = new EdbcHandZone(this, 150, 1080, 1000, 210, "player_hand",
             this.deck[0].getSize(),
@@ -306,6 +328,28 @@ export default class Board extends Phaser.Scene {
                 let card: CardBase = self.deck.pop()
                 playerHand.addCard(card)
                 card.updateZone(playerHand);
+            }
+        }, this)
+
+        let hideHand = this.add.text(1800, 400, ['Hide Hand'])
+            .setFontSize(22)
+            .setColor('#ff00ff')
+            .setInteractive()
+
+        hideHand.on('pointerdown', function (pointer: Phaser.Input.Pointer) {
+            if (self.deck.length > 0) {
+                playerHand.hideHand()
+            }
+        }, this)
+
+        let showHand = this.add.text(1800, 500, ['Show Hand'])
+            .setFontSize(22)
+            .setColor('#ff00ff')
+            .setInteractive()
+
+        showHand.on('pointerdown', function (pointer: Phaser.Input.Pointer) {
+            if (self.deck.length > 0) {
+                playerHand.showHand()
             }
         }, this)
 

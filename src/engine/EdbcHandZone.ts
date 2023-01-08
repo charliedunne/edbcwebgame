@@ -3,6 +3,10 @@ import { EdbcZone, Position, ZoneLayout } from "./EdbcZone";
 
 export class EdbcHandZone extends EdbcZone {
 
+    /* Hand hidden flag */
+    isHidden: boolean
+    absYpos: number
+
     /**
      * Constructor
      * 
@@ -25,6 +29,12 @@ export class EdbcHandZone extends EdbcZone {
     ) {
         // Call Base constructor
         super(scene, x, y, width, height, name, cardSize, layout)
+
+        // Initialize Hidden status
+        this.isHidden = true
+
+        // Initialize Absolute Y position
+        this.absYpos = this.positions[0].y
     }
 
     /**
@@ -53,9 +63,9 @@ export class EdbcHandZone extends EdbcZone {
 
                     // Compute Position
                     position.x = this.x + ((cardSize.width / 2) + 15) +
-                        (cardSize.width/2) * i;
+                        (cardSize.width / 2) * i;
 
-                    position.y = this.y + (cardSize.height / 2) + 25 + cardSize.height * j;
+                    position.y = this.y + (cardSize.height / 2) + 25;
 
                     // Set depth
                     position.depth = depth++
@@ -73,28 +83,55 @@ export class EdbcHandZone extends EdbcZone {
 
 
     /**
-     * Implementation of abstract method.
-     * 
-     * Calculate the appropriate position of the new card to insert in the zone
-     * 
-     * @param card Card to be added (include to check the dimensions)
-     * @return Position Position to place the new card
+     * Show the hand
      */
-    calculateNextCardPosition(card: CardBase): Position {
+    showHand() {
 
-        // Position to calculate
-        let position: Position = { x: 0, y: 0, depth: 0 }
+        if (this.isHidden) {
 
-        // Compute Position
-        position.x = this.x + ((card.getSize().width / 2) + 15) +
-            (card.getSize().width + 5) * (this.cards.length % 4);
+            console.log("[showHand] abosolute_pos: " + this.absYpos)
+            for (let i = 0; i < this.positions.length; ++i) {
+                // Move the card to the appropriate position
+                this.scene.tweens.add({
+                    targets: this.cards[i],
+                    y: this.absYpos - 100,
+                    duration: 100,
+                    yoyo: false,
+                    ease: "Power1.inOut",
+                    repeat: 0
+                })
 
-        position.y = this.y + (card.getSize().height / 2) + 25;
+                this.positions[i].y = this.absYpos - 100
+            }
 
-        if (this.cards.length >= 4) {
-            position.y = position.y + card.getSize().height + 15;
+            this.isHidden = false
+        }
+    }
+
+    /**
+     * Hide the hand
+     */
+    hideHand() {
+
+        if (!this.isHidden) {
+
+            console.log("[hideHand] abosolute_pos: " + this.absYpos)
+            for (let i = 0; i < this.positions.length; ++i) {
+                // Move the card to the appropriate position
+                this.scene.tweens.add({
+                    targets: this.cards[i],
+                    y: this.absYpos,
+                    duration: 100,
+                    yoyo: false,
+                    ease: "Power1.inOut",
+                    repeat: 0
+                })
+
+                this.positions[i].y = this.absYpos
+            }
+
+            this.isHidden = true
         }
 
-        return position
     }
 }
