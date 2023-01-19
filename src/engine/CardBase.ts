@@ -1,7 +1,6 @@
 import GameZone from "../engine/GameZone";
 
-export interface CardSize
-{
+export interface CardSize {
     width: number
     height: number
 }
@@ -141,19 +140,19 @@ export default class CardBase extends Phaser.GameObjects.Container {
     title: Phaser.GameObjects.BitmapText;
 
     /* Card Manufacturer, Model and role */
-    model: Phaser.GameObjects.BitmapText;
-    role: Phaser.GameObjects.BitmapText;
+    model?: Phaser.GameObjects.BitmapText;
+    role?: Phaser.GameObjects.BitmapText;
 
     /* Ship Technical Data */
-    costFrame: Phaser.GameObjects.Image;
-    dataFrame: Phaser.GameObjects.Image;
-    cost: Phaser.GameObjects.BitmapText;
-    strength: Phaser.GameObjects.BitmapText;
-    speed: Phaser.GameObjects.BitmapText;
+    costFrame?: Phaser.GameObjects.Image;
+    dataFrame?: Phaser.GameObjects.Image;
+    cost?: Phaser.GameObjects.BitmapText;
+    strength?: Phaser.GameObjects.BitmapText;
+    speed?: Phaser.GameObjects.BitmapText;
 
     /* Card Data */
     baseAttr: CardBaseAttr;
-    shipAttr: CardShipAttr;
+    shipAttr?: CardShipAttr;
 
     constructor(
         scene: Phaser.Scene,
@@ -190,13 +189,11 @@ export default class CardBase extends Phaser.GameObjects.Container {
 
         /* Save data */
         this.baseAttr = bBaseAttr;
-        if (bShipAttr !== undefined)
-        {
-            this.shipAttr = bShipAttr;
-        }
+        this.shipAttr = bShipAttr;
+
 
         /* Initialize internal objects */
-        /** @todo Initialize phaser object */       
+        /** @todo Initialize phaser object */
 
         /* -- Set Card Visuals -- */
 
@@ -278,9 +275,9 @@ export default class CardBase extends Phaser.GameObjects.Container {
         }
 
         /* Ship attr */
-/*         if (this.shipAttr.karma === undefined) {
-            this.shipAttr.karma = 0;
-        } */
+        /*         if (this.shipAttr.karma === undefined) {
+                    this.shipAttr.karma = 0;
+                } */
 
         if (bBaseAttr.type == CardType.ship && this.shipAttr !== undefined) {
             if (this.shipAttr.strength !== undefined) {
@@ -334,14 +331,23 @@ export default class CardBase extends Phaser.GameObjects.Container {
         this.add(this.id);
         this.add(this.set);
         this.add(this.title);
-        if (bBaseAttr.type == CardType.ship) {
+        if (bBaseAttr.type == CardType.ship &&
+            this.model !== undefined &&
+            this.role !== undefined &&
+            this.dataFrame !== undefined &&
+            this.strength !== undefined &&
+            this.speed !== undefined) {
+
             this.add(this.model);
             this.add(this.role);
             this.add(this.dataFrame);
             this.add(this.strength);
             this.add(this.speed);
         }
-        if (this.shipAttr?.cost !== undefined) {
+        if (this.shipAttr?.cost !== undefined &&
+            this.costFrame !== undefined &&
+            this.cost !== undefined) {
+
             this.add(this.costFrame);
             this.add(this.cost);
         }
@@ -485,8 +491,7 @@ export default class CardBase extends Phaser.GameObjects.Container {
     }
     clickDown() {
 
-        if (this.zoomStatus === CardZoomStatus.default)
-        {
+        if (this.zoomStatus === CardZoomStatus.default) {
             this.xPosOnClick = this.x
             this.yPosOnClick = this.y
         }
@@ -554,8 +559,8 @@ export default class CardBase extends Phaser.GameObjects.Container {
                 this.dragging = false
 
                 /* Update card position */
-               /*  this.xPosOnClick = this.x
-                this.yPosOnClick = this.y */
+                /*  this.xPosOnClick = this.x
+                 this.yPosOnClick = this.y */
             }
         }
     }
@@ -659,9 +664,11 @@ export default class CardBase extends Phaser.GameObjects.Container {
         return this.shipAttr;
     }
 
-    getSize() : CardSize {
-        let size: CardSize = {width: this.bg.width * this.scale,
-            height: this.bg.height * this.scale}
+    getSize(): CardSize {
+        let size: CardSize = {
+            width: this.bg.width * this.scale,
+            height: this.bg.height * this.scale
+        }
 
         return size
     }
@@ -673,8 +680,7 @@ export default class CardBase extends Phaser.GameObjects.Container {
             this.currentZone.name)
     }
 
-    getZone() : GameZone
-    {
+    getZone(): GameZone {
         return this.currentZone
     }
 
