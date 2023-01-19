@@ -1,19 +1,22 @@
-import CardBase from "../engine/CardBase";
+import CardBase, { CardSize } from "../engine/CardBase";
 
-export default class Deck extends Phaser.GameObjects.Container {
+export default class Deck{
     
     /* Array of cards in deck */
     cards: CardBase [];
 
-    
+    x: number;
+    y: number;
+
     constructor(
-        scene: Phaser.Scene,
+        x: number,
+        y: number
       ) {
-        /* Call super */
-        super(scene, 0, 0);
 
         /* Initialize array of cards */
         this.cards = new Array();
+        this.x = x;
+        this.y = y;
     }
 
     pushCard(card:CardBase)
@@ -45,6 +48,17 @@ export default class Deck extends Phaser.GameObjects.Container {
             // Swap
             this.cards[i] = this.cards[j];
             this.cards[j] = temp;
+        }
+    }
+
+    getSize() {
+        if (this.cards.length > 0)
+        {
+            return this.cards[0].getSize();
+        }
+        else
+        {
+            return {width: 0, height: 0} as CardSize;
         }
     }
 }

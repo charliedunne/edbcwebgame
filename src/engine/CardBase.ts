@@ -12,6 +12,7 @@ export enum CardType {
     action = "action",
     outfitting = "outfitting",
     mission = "mission",
+    missionSpecific = "mission specific"
 }
 
 export enum CardFaction {
@@ -27,7 +28,7 @@ export enum CardSet {
 }
 
 export enum ShipRole {
-    figher = "Fighter",
+    fighter = "Fighter",
     warship = "Warship",
     multipurpose = "Multipurpose",
     liner = "Liner",
@@ -51,7 +52,7 @@ enum CardColor {
     neutral = "0xff8020",
 }
 
-type CardBaseAttr = {
+export type CardBaseAttr = {
     id: number;
     set: CardSet;
     title: string;
@@ -60,7 +61,7 @@ type CardBaseAttr = {
     flavor?: string;
 };
 
-type CardShipAttr = {
+export type CardShipAttr = {
     cost: number;
     karma: number;
     strength: number;
@@ -159,7 +160,7 @@ export default class CardBase extends Phaser.GameObjects.Container {
         x: number,
         y: number,
         bBaseAttr: CardBaseAttr,
-        bShipAttr: CardShipAttr,
+        bShipAttr?: CardShipAttr,
     ) {
         /* Call the Base constructor */
         super(scene, x, y);
@@ -178,6 +179,7 @@ export default class CardBase extends Phaser.GameObjects.Container {
 
         /* Depth */
         this.depth = cardOrder++
+        this.depthOnClick = 0;
 
         /* Dragging flag */
         this.dragging = false;
@@ -188,7 +190,10 @@ export default class CardBase extends Phaser.GameObjects.Container {
 
         /* Save data */
         this.baseAttr = bBaseAttr;
-        this.shipAttr = bShipAttr;
+        if (bShipAttr !== undefined)
+        {
+            this.shipAttr = bShipAttr;
+        }
 
         /* Initialize internal objects */
         /** @todo Initialize phaser object */       
@@ -248,7 +253,7 @@ export default class CardBase extends Phaser.GameObjects.Container {
         this.title.setTint(CardColor[bBaseAttr.faction] as number);
 
         /* Ship model details */
-        if (bBaseAttr.type == CardType.ship) {
+        if (bBaseAttr.type == CardType.ship && this.shipAttr !== undefined) {
             let modelString =
                 this.shipAttr.builder + " " + this.shipAttr.model + " - ";
             let roleString = this.shipAttr.role.join(", ");
@@ -273,11 +278,11 @@ export default class CardBase extends Phaser.GameObjects.Container {
         }
 
         /* Ship attr */
-        if (this.shipAttr.karma === undefined) {
+/*         if (this.shipAttr.karma === undefined) {
             this.shipAttr.karma = 0;
-        }
+        } */
 
-        if (bBaseAttr.type == CardType.ship) {
+        if (bBaseAttr.type == CardType.ship && this.shipAttr !== undefined) {
             if (this.shipAttr.strength !== undefined) {
                 this.dataFrame = scene.add.image(0, 0, "card_cd");
             }
