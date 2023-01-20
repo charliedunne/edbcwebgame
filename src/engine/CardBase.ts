@@ -57,7 +57,7 @@ export type CardBaseAttr = {
     title: string;
     type: CardType;
     faction: CardFaction;
-    flavor?: string;
+    flavor: string;
 };
 
 export type CardShipAttr = {
@@ -149,6 +149,9 @@ export default class CardBase extends Phaser.GameObjects.Container {
     cost?: Phaser.GameObjects.BitmapText;
     strength?: Phaser.GameObjects.BitmapText;
     speed?: Phaser.GameObjects.BitmapText;
+
+    /* Ship Text flavor */
+    flavor?: Phaser.GameObjects.BitmapText;
 
     /* Card Data */
     baseAttr: CardBaseAttr;
@@ -274,11 +277,6 @@ export default class CardBase extends Phaser.GameObjects.Container {
                 .setOrigin(0, 0);
         }
 
-        /* Ship attr */
-        /*         if (this.shipAttr.karma === undefined) {
-                    this.shipAttr.karma = 0;
-                } */
-
         if (bBaseAttr.type == CardType.ship && this.shipAttr !== undefined) {
             if (this.shipAttr.strength !== undefined) {
                 this.dataFrame = scene.add.image(0, 0, "card_cd");
@@ -319,6 +317,22 @@ export default class CardBase extends Phaser.GameObjects.Container {
                 .setOrigin(0.5);
         }
 
+        /* Set Flavor */
+        if (this.baseAttr.flavor.length > 0)
+        {
+            console.log(this.bg.height/2)
+
+            this.flavor = scene.add
+            .bitmapText(
+                -550,
+                this.bg.height/2 - 125,
+                "eurostile",
+                this.baseAttr.flavor.toString(),
+                49
+            )
+            .setOrigin(0, 1);
+        }
+
         /* Create Card Back */
         this.back = scene.add.image(0, 0, "card_back");
 
@@ -331,6 +345,10 @@ export default class CardBase extends Phaser.GameObjects.Container {
         this.add(this.id);
         this.add(this.set);
         this.add(this.title);
+        if (this.flavor !== undefined)
+        {
+            this.add(this.flavor);
+        }
         if (bBaseAttr.type == CardType.ship &&
             this.model !== undefined &&
             this.role !== undefined &&
