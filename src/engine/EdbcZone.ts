@@ -163,8 +163,6 @@ export abstract class EdbcZone extends Phaser.GameObjects.Zone {
             throw new Error('Card [' + card.baseAttr.id + '] not found')
         }
 
-        console.log('remove card index: ' + index)
-
         // Remove card from array
         this.cards.splice(index, 1)
 

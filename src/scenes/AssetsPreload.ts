@@ -25,7 +25,7 @@ export function edbc_preload(scene: Phaser.Scene) {
      scene.load.image('bg_action_empire', 'assets/images/cards/common/edbc_action_card_bg__empire.png');
      scene.load.image('bg_action_federation', 'assets/images/cards/common/edbc_action_card_bg__federation.png');
      scene.load.image('bg_action_neutral', 'assets/images/cards/common/edbc_action_card_bg__neutral.png');
-     scene.load.image('bg_action_none', 'assets/images/cards/common/edbc_action_card_bg__none.png');
+     //scene.load.image('bg_action_none', 'assets/images/cards/common/edbc_action_card_bg__none.png');
 
      /* Outfitting Card Background */
      scene.load.image('bg_outfitting', 'assets/images/cards/common/edbc_outfitting_card_bg.png');

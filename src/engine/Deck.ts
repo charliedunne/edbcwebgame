@@ -29,6 +29,31 @@ export default class Deck{
         return this.cards.pop();
     }
 
+    popCardById(id:number): CardBase
+    {
+        let index: number = -1;
+
+        for (let i = 0; i < this.cards.length; ++i)
+        {
+            if (this.cards[i].baseAttr.id === id)
+            {
+                index = i;   
+                break;     
+            }
+        }
+
+        if (index >= 0)
+        {
+            let card: CardBase = this.cards[index];
+            this.cards.splice(index, 1)
+            return card
+        }
+        else
+        {
+            throw Error(`Card with ID ${id} not found`)
+        }
+    }
+
     getCardById(id: number)
     {
         return this.cards[id];

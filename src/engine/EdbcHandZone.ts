@@ -35,6 +35,8 @@ export class EdbcHandZone extends EdbcZone {
 
         // Initialize Absolute Y position
         this.absYpos = this.positions[0].y
+
+        this.showHand()
     }
 
     /**
@@ -89,7 +91,6 @@ export class EdbcHandZone extends EdbcZone {
 
         if (this.isHidden) {
 
-            console.log("[showHand] abosolute_pos: " + this.absYpos)
             for (let i = 0; i < this.positions.length; ++i) {
                 // Move the card to the appropriate position
                 this.scene.tweens.add({
@@ -115,7 +116,6 @@ export class EdbcHandZone extends EdbcZone {
 
         if (!this.isHidden) {
 
-            console.log("[hideHand] abosolute_pos: " + this.absYpos)
             for (let i = 0; i < this.positions.length; ++i) {
                 // Move the card to the appropriate position
                 this.scene.tweens.add({

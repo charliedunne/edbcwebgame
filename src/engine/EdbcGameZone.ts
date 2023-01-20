@@ -57,7 +57,7 @@ export class EdbcGameZone extends EdbcZone {
                     // Add computed position to the internal array
                     this.positions.push(position)
 
-                    console.log('<' + this.getName() + '> Position for [' + counter++ + '] = ' + position.x + ', ' + position.y)
+                    //console.log('<' + this.getName() + '> Position for [' + counter++ + '] = ' + position.x + ', ' + position.y)
                 }
             }
         }

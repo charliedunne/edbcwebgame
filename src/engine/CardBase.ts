@@ -1,4 +1,4 @@
-import GameZone from "../engine/GameZone";
+import { EdbcGameZone } from "../engine/EdbcGameZone";
 
 export interface CardSize {
     width: number
@@ -120,7 +120,7 @@ export default class CardBase extends Phaser.GameObjects.Container {
     zoomStatus: CardZoomStatus;
 
     /* Zone */
-    currentZone: GameZone;
+    currentZone: EdbcGameZone;
 
     /* Background */
     bg: Phaser.GameObjects.Image;
@@ -242,7 +242,7 @@ export default class CardBase extends Phaser.GameObjects.Container {
             .bitmapText(
                 -560,
                 titleYPosition,
-                "orbitron",
+                "eurostile",
                 bBaseAttr.title.toUpperCase(),
                 85
             )
@@ -366,7 +366,7 @@ export default class CardBase extends Phaser.GameObjects.Container {
         //this.on("clicked", this.click, this);
         //this.on('dragging', this.drag, this);
 
-        console.log("New card id [" + this.baseAttr.id + "], depth: " + this.depth)
+        //console.log("New card id [" + this.baseAttr.id + "], depth: " + this.depth)
 
     }
 
@@ -421,7 +421,6 @@ export default class CardBase extends Phaser.GameObjects.Container {
     }
 
     flip() {
-        console.log("flipping...");
 
         const currentScaleX = this.scaleX;
         const currentScaleY = this.scaleY;
@@ -673,14 +672,14 @@ export default class CardBase extends Phaser.GameObjects.Container {
         return size
     }
 
-    updateZone(zone: GameZone) {
+    updateZone(zone: EdbcGameZone) {
         this.currentZone = zone;
-        console.log("Card: " + this.baseAttr.title +
+/*         console.log("Card: " + this.baseAttr.title +
             " (" + this.baseAttr.id + ") is in zone: " +
-            this.currentZone.name)
+            this.currentZone.name) */
     }
 
-    getZone(): GameZone {
+    getZone(): EdbcGameZone {
         return this.currentZone
     }
 

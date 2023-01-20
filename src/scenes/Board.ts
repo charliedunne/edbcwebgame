@@ -38,7 +38,6 @@ export default class Board extends Phaser.Scene {
             if (gameObject.zoomStatus == CardZoomStatus.default) {
                 if (gameObject.getZone() != dropZone) {
                     gameObject.getZone().removeCard(gameObject)
-                    console.log('Registering new zone')
                     dropZone.addCard(gameObject);
                     gameObject.updateZone(dropZone);
                 }
@@ -77,15 +76,20 @@ export default class Board extends Phaser.Scene {
                     role: cardData[i].role
                 } as CardShipAttr;
                 
-                card = new CardBase(this, deck.x, deck.y, cardBaseAttr, cardShipAttr).setScale(0.1);
+/*                 if (cardBaseAttr.type === CardType.outfitting)
+                { */
+                    card = new CardBase(this, deck.x, deck.y, cardBaseAttr, cardShipAttr).setScale(0.1);
+                    deck.pushCard(card);
+               /*  } */
 
             }
             else
             {
                 card = new CardBase(this, deck.x, deck.y, cardBaseAttr).setScale(0.1);
+                deck.pushCard(card);
             }
 
-            deck.pushCard(card);
+            
         }
 
         deck.shuffleDeck();
@@ -148,11 +152,27 @@ export default class Board extends Phaser.Scene {
             .setColor('#ff00ff')
             .setInteractive()
 
+        const customId: number = 61
+
+        let dealCardsByID = this.add.text(1750, 800, [`DEAL_${customId}`])
+            .setFontSize(22)
+            .setColor('#ff00ff')
+            .setInteractive()            
+
         let self = this
 
         dealCards.on('pointerdown', function (pointer: Phaser.Input.Pointer) {
             if (self.deck.getLength() > 0) {
                 let card: CardBase = <CardBase>self.deck.popCard()
+                playerHand.addCard(card)
+                card.updateZone(playerHand);
+                card.flip();
+            }
+        }, this)
+
+        dealCardsByID.on('pointerdown', function (pointer: Phaser.Input.Pointer) {
+            if (self.deck.getLength() > 0) {
+                let card: CardBase = <CardBase>self.deck.popCardById(customId)
                 playerHand.addCard(card)
                 card.updateZone(playerHand);
                 card.flip();
