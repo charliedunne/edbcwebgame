@@ -59,4 +59,7 @@ export function edbc_preload(scene: Phaser.Scene) {
      scene.load.image('alliance', 'assets/images/cards/common/edbc_ico_alliance_s.png');
      scene.load.image('neutral', 'assets/images/cards/common/edbc_ico_neutral_s.png');
 
+     /* Art */
+     scene.load.image('no_image', 'assets/images/cards/art/no_image.png');
+
 }

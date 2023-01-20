@@ -85,8 +85,9 @@ const padLeft = (
 class CardVisuals {
     bg: string = "bg_none";
     set: string = "set_none";
+    art: string = "no_image";
 
-    constructor(type: CardType, faction: CardFaction, set: CardSet) {
+    constructor(type: CardType, faction: CardFaction, set: CardSet, art?: string) {
         this.bg = "bg_" + type;
 
         if (type != CardType.outfitting) {
@@ -94,6 +95,10 @@ class CardVisuals {
         }
 
         this.set = set.toString();
+        if (art !== undefined) {
+            this.art = art;
+        }
+
     }
 }
 
@@ -126,6 +131,7 @@ export default class CardBase extends Phaser.GameObjects.Container {
     bg: Phaser.GameObjects.Image;
     back: Phaser.GameObjects.Image;
     frameDrained: Phaser.GameObjects.Image;
+    art: Phaser.GameObjects.Image;
 
     /* Faction icon */
     factionIcon: Phaser.GameObjects.Image;
@@ -163,6 +169,7 @@ export default class CardBase extends Phaser.GameObjects.Container {
         y: number,
         bBaseAttr: CardBaseAttr,
         bShipAttr?: CardShipAttr,
+        art?: string
     ) {
         /* Call the Base constructor */
         super(scene, x, y);
@@ -204,10 +211,19 @@ export default class CardBase extends Phaser.GameObjects.Container {
         let visuals = new CardVisuals(
             bBaseAttr.type,
             bBaseAttr.faction,
-            bBaseAttr.set
+            bBaseAttr.set,
+            art
         );
 
         this.bg = scene.add.image(0, 0, visuals.bg);
+
+        /* Art Image */
+        if (art === undefined)
+        {
+            art = 'no_image'
+        }
+
+        this.art = scene.add.image(0, 0, visuals.art);
 
         /* Chose icon */
         if (bBaseAttr.type == CardType.ship) {
@@ -340,6 +356,7 @@ export default class CardBase extends Phaser.GameObjects.Container {
         this.frameDrained = scene.add.image(0, 0, "drained_a").setAlpha(0);
 
         /* Add object to container */
+        this.add(this.art);
         this.add(this.bg);
         this.add(this.factionIcon);
         this.add(this.id);
