@@ -152,7 +152,7 @@ export default class Board extends Phaser.Scene {
             .setColor('#ff00ff')
             .setInteractive()
 
-        const customId: number = 90
+        const customId: number = 43
 
         let dealCardsByID = this.add.text(1750, 800, [`DEAL_${customId}`])
             .setFontSize(22)
