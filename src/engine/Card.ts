@@ -17,39 +17,129 @@ const DYN_SPEED = 100
 
 /* Private functions */
 
+/**
+ * Create a string adding padding to numbers
+ * 
+ * @param number Number to render
+ * @param length Total lengh of character
+ * @param character [Optional] Padding character
+ * @returns String
+ */
+const padLeft = (
+    number: number,
+    length: number,
+    character: string = "0"
+): string => {
+    let result = String(number);
+    for (let i = result.length; i < length; ++i) {
+        result = character + result;
+    }
+    return result;
+};
+
 /* Private classes */
-class CardBaseVisuals {
+export class CardBaseVisuals {
 
     /* Background */
     bg: Phaser.GameObjects.Image;
     back: Phaser.GameObjects.Image;
     art: Phaser.GameObjects.Image;
-
+    flavor: Phaser.GameObjects.BitmapText;
+    title: Phaser.GameObjects.BitmapText;
+    set: Phaser.GameObjects.Image;
+    id: Phaser.GameObjects.BitmapText;
+    factionIcon: Phaser.GameObjects.Image;
 
     constructor(
         scene: Phaser.Scene,
-        type: CardType,
-        faction: CardFaction,
-        set: CardSet,
-        art: string = "no_image"
+        baseAttr: CardBaseAttr
     ) {
 
         // Configure background depending on type
-        let bgKey = "bg_" + type;
+        let bgKey = "bg_" + baseAttr.type;
 
-        if (type != CardType.outfitting) {
-            bgKey = bgKey + "_" + faction;
+        if (baseAttr.type != CardType.outfitting) {
+            bgKey = bgKey + "_" + baseAttr.faction;
         }
 
         // Create Phaser Objects
+
+        // Art Image
+        if (baseAttr.art === undefined) {
+            baseAttr.art = "no_image"
+        }
+
+        this.art = scene.add.image(0, 0, baseAttr.art)
+
+        // Background Frame and Layout
         this.bg = scene.add.image(0, 0, bgKey)
+
+        // Flavor
+        if (baseAttr.flavor === undefined) {
+            baseAttr.flavor = ""
+        }
+
+        this.flavor = scene.add
+            .bitmapText(
+                -550,
+                this.bg.height / 2 - 125,
+                "eurostile",
+                baseAttr.flavor.toString(),
+                49
+            )
+            .setOrigin(0, 1);
+
+        // Title
+        let titleYPosition: number = 0;
+        if (baseAttr.type == CardType.ship) {
+            titleYPosition = 70;
+        } else {
+            titleYPosition = 130;
+        }
+
+        this.title = scene.add
+            .bitmapText(
+                -560,
+                titleYPosition,
+                "eurostile",
+                baseAttr.title.toUpperCase(),
+                85
+            )
+            .setOrigin(0, 0);
+
+        this.title.setTint(CardColor[baseAttr.faction] as unknown as number);
+
+        // Card Set
+        this.set = scene.add.image(0, 0, baseAttr.set);
+
+        // ID
+        this.id = scene.add
+            .bitmapText(512, 810, "eurostile", padLeft(baseAttr.id, 3), 45)
+            .setOrigin(0.5, 0.5);
+        this.id.setTint(0xd2b679);
+
+        // Faction Icon
+        let factionIconYPos: number = 0;
+        if (baseAttr.type == CardType.ship) {
+            factionIconYPos = 140;
+        }
+        else {
+            factionIconYPos = 205;
+        }
+
+        this.factionIcon = scene.add.image(
+            510,
+            factionIconYPos,
+            baseAttr.faction.toString()
+        );
+
+        // Card Back
         this.back = scene.add.image(0, 0, "card_back")
-        this.art = scene.add.image(0, 0, art)
     }
 }
 
 
-export default  class Card extends Phaser.GameObjects.Container {
+export default class Card extends Phaser.GameObjects.Container {
 
     /* - Private members --------------------------------------------------- */
 
@@ -96,16 +186,19 @@ export default  class Card extends Phaser.GameObjects.Container {
         this.faceDown = faceDown;
 
         // Create Visual elements
-        this.baseVisuals = new CardBaseVisuals(scene, baseAttr.type,
-            baseAttr.faction, baseAttr.set, baseAttr.art);
+        this.baseVisuals = new CardBaseVisuals(scene, baseAttr);
 
         // Add elements to container
         this.add(this.baseVisuals.back);
         this.add(this.baseVisuals.art);
         this.add(this.baseVisuals.bg);
+        this.add(this.baseVisuals.title);
+        this.add(this.baseVisuals.flavor);
+        this.add(this.baseVisuals.set);
+        this.add(this.baseVisuals.id);
+        this.add(this.baseVisuals.factionIcon);
 
-        if (this.faceDown)
-        {
+        if (this.faceDown) {
             this.showBack();
         }
 
@@ -124,6 +217,9 @@ export default  class Card extends Phaser.GameObjects.Container {
 
     /* Public interface ---------------------------------------------------- */
 
+    /**
+     * Flip the Card
+     */
     flip() {
 
         // Save current scale
@@ -185,12 +281,20 @@ export default  class Card extends Phaser.GameObjects.Container {
 
     /* Protected interface ------------------------------------------------- */
 
-    showBack() : void {
-        this.moveTo(this.baseVisuals.back, this.list.length-1);
+    /**
+     * Render the back the latests
+     */
+    showBack(): void {
+        this.moveTo(this.baseVisuals.back, this.list.length - 1);
+        this.baseVisuals.back.setVisible(true);
     }
 
-    hideBack() : void {
+    /**
+     * Do not render the Back at all
+     */
+    hideBack(): void {
         this.sendToBack(this.baseVisuals.back);
+        this.baseVisuals.back.setVisible(false);
     }
 
     /* Private interface --------------------------------------------------- */

@@ -81,13 +81,13 @@ export default class Board extends Phaser.Scene {
 
                 /*                 if (cardBaseAttr.type === CardType.outfitting)
                                 { */
-                card = new CardBase(this, deck.x, deck.y, cardBaseAttr, cardShipAttr).setScale(0.1);
+                card = new CardBase(this, deck.x, deck.y, cardBaseAttr, cardShipAttr).setScale(0.19);
                 deck.pushCard(card);
                 /*  } */
 
             }
             else {
-                card = new CardBase(this, deck.x, deck.y, cardBaseAttr).setScale(0.1);
+                card = new CardBase(this, deck.x, deck.y, cardBaseAttr).setScale(0.19);
                 deck.pushCard(card);
             }
 
@@ -110,21 +110,23 @@ export default class Board extends Phaser.Scene {
         this.input.mouse.disableContextMenu();
 
         /* TEST */
-        let card = new Card(this, 800, 600, undefined,
+        let card = new Card(this, 1500, 600, undefined,
             {   id: 1,
                 set: CardSet.core,
                 title: "My TEST card",
                 type: CardType.action,
                 faction: CardFaction.federation,
-            }).setScale(0.12);
+                flavor: "En un lugar de la mancha\nde cuyo nombre no quiero acordarme"
+            } as CardBaseAttr).setScale(0.43);
 
-        let ship = new ShipCard(this, 200, 600, true,
+        let ship = new ShipCard(this, 600, 600, false,
             {
                 id: 2,
                 set: CardSet.core,
-                title: "Explorer",
+                title: "Explorer matherfucker\nBravo",
                 type: CardType.ship,
                 faction: CardFaction.federation,
+                flavor: "En un lugar de la mancha\nde cuyo nombre no quiero acordarme"
             } as CardBaseAttr,
             {
                 cost: 7,
@@ -134,7 +136,7 @@ export default class Board extends Phaser.Scene {
                 builder: "Lakon",
                 model: "Diamonback Explorer",
                 role: [ShipRole.explorer, ShipRole.fighter]                
-            } as CardShipAttr).setScale(0.12);
+            } as CardShipAttr).setScale(0.45);
 
 
         /* Create main deck */
