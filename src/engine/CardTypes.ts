@@ -56,7 +56,7 @@ export type CardBaseAttr = {
     type: CardType;
     faction: CardFaction;
     flavor?: string;
-    art: string;
+    art?: string;
 };
 
 export type CardShipAttr = {

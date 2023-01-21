@@ -6,6 +6,9 @@ import { EdbcGameZone } from "../engine/EdbcGameZone";
 import { EdbcHandZone } from "../engine/EdbcHandZone";
 import { cardData } from "../data/cardsData"
 
+import Card from "../engine/Card";
+import ShipCard from "../engine/ShipCard";
+
 export default class Board extends Phaser.Scene {
 
     deck: Deck;
@@ -54,7 +57,7 @@ export default class Board extends Phaser.Scene {
 
         for (let i = 0; i < cardData.length; ++i) {
 
-            let card:CardBase;
+            let card: CardBase;
 
             let cardBaseAttr = {
                 id: cardData[i].id,
@@ -75,21 +78,20 @@ export default class Board extends Phaser.Scene {
                     model: cardData[i].model,
                     role: cardData[i].role
                 } as CardShipAttr;
-                
-/*                 if (cardBaseAttr.type === CardType.outfitting)
-                { */
-                    card = new CardBase(this, deck.x, deck.y, cardBaseAttr, cardShipAttr).setScale(0.1);
-                    deck.pushCard(card);
-               /*  } */
+
+                /*                 if (cardBaseAttr.type === CardType.outfitting)
+                                { */
+                card = new CardBase(this, deck.x, deck.y, cardBaseAttr, cardShipAttr).setScale(0.1);
+                deck.pushCard(card);
+                /*  } */
 
             }
-            else
-            {
+            else {
                 card = new CardBase(this, deck.x, deck.y, cardBaseAttr).setScale(0.1);
                 deck.pushCard(card);
             }
 
-            
+
         }
 
         deck.shuffleDeck();
@@ -105,8 +107,36 @@ export default class Board extends Phaser.Scene {
         const side_x: number = 140;
         const side_y: number = 200;
 
-
         this.input.mouse.disableContextMenu();
+
+        /* TEST */
+        let card = new Card(this, 800, 600,
+            {
+                id: 1,
+                set: CardSet.core,
+                title: "My TEST card",
+                type: CardType.action,
+                faction: CardFaction.federation,
+            }).setScale(0.12);
+
+        let ship = new ShipCard(this, 200, 600,
+            {
+                id: 2,
+                set: CardSet.core,
+                title: "Explorer",
+                type: CardType.ship,
+                faction: CardFaction.federation,
+            } as CardBaseAttr,
+            {
+                cost: 7,
+                karma: 1,
+                strength: 8,
+                speed: 30,
+                builder: "Lakon",
+                model: "Diamonback Explorer",
+                role: [ShipRole.explorer, ShipRole.fighter]                
+            } as CardShipAttr).setScale(0.12);
+
 
         /* Create main deck */
         this.createMainDeck(this.deck)
@@ -157,7 +187,7 @@ export default class Board extends Phaser.Scene {
         let dealCardsByID = this.add.text(1750, 800, [`DEAL_${customId}`])
             .setFontSize(22)
             .setColor('#ff00ff')
-            .setInteractive()            
+            .setInteractive()
 
         let self = this
 
@@ -203,8 +233,6 @@ export default class Board extends Phaser.Scene {
 
         this.handleEvents()
     }
-
-
 
     update() {
 

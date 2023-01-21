@@ -191,6 +191,10 @@ export abstract class EdbcZone extends Phaser.GameObjects.Zone {
         }
     }
 
+    /**
+     * It returns the Name of the object zone
+     * @returns Zone
+     */
     getName() {
         return this.zoneName;
     }

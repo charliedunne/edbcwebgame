@@ -12,43 +12,49 @@ import {
     CardShipAttr
 } from './CardTypes';
 
+/* CONSTANTS */
+const DYN_SPEED = 100
 
 /* Private functions */
 
 /* Private classes */
-class CardVisuals {
-    bg: string = "bg_none";
-    set: string = "set_none";
-    art: string = "no_art";
+class CardBaseVisuals {
+
+    /* Background */
+    bg: Phaser.GameObjects.Image;
+    back: Phaser.GameObjects.Image;
+    art: Phaser.GameObjects.Image;
+
 
     constructor(
+        scene: Phaser.Scene,
         type: CardType,
-        faction: CardFaction, 
-        set: CardSet, 
-        art?: string) {
-        this.bg = "bg_" + type;
+        faction: CardFaction,
+        set: CardSet,
+        art: string = "no_image"
+    ) {
+
+        // Configure background depending on type
+        let bgKey = "bg_" + type;
 
         if (type != CardType.outfitting) {
-            this.bg = this.bg + "_" + faction;
+            bgKey = bgKey + "_" + faction;
         }
 
-
-        this.set = set.toString();
-
-        if (art !== undefined) {
-            this.art = art;
-        }
-
+        // Create Phaser Objects
+        this.bg = scene.add.image(0, 0, bgKey).setDepth(0);
+        this.back = scene.add.image(0, 0, "card_back").setDepth(0).setVisible(false);
+        this.art = scene.add.image(0, 0, art).setDepth(0);
     }
 }
 
 
-export default class Card extends Phaser.GameObjects.Container {
+export default  class Card extends Phaser.GameObjects.Container {
 
     /* - Private members --------------------------------------------------- */
 
     /* - Public members ---------------------------------------------------- */
-    
+
     // Scene
     scene: Phaser.Scene;
 
@@ -59,14 +65,17 @@ export default class Card extends Phaser.GameObjects.Container {
     // Card Data
     baseAttr: CardBaseAttr;
 
-    // Card Visuals
-    visuals: CardVisuals;
-
     /* - Protected members ------------------------------------------------- */
 
+    // Card Base Visuals
+    baseVisuals: CardBaseVisuals;
+
+    // Status flags
+    zoomStatus: CardZoomStatus;
+    flipped: Boolean;
 
     /* Constructor --------------------------------------------------------- */
-    constructor (
+    constructor(
         scene: Phaser.Scene,
         x: number,
         y: number,
@@ -81,8 +90,27 @@ export default class Card extends Phaser.GameObjects.Container {
         this.y = y;
         this.baseAttr = baseAttr;
 
+        // Internal status variables
+        this.zoomStatus = CardZoomStatus.default;
+        this.flipped = true;
+
         // Create Visual elements
-        this.createVisuals()
+        this.baseVisuals = new CardBaseVisuals(scene, baseAttr.type,
+            baseAttr.faction, baseAttr.set, baseAttr.art);
+
+        // Add elements to container
+        this.add(this.baseVisuals.art);
+        this.add(this.baseVisuals.bg);
+        if (this.flipped) {
+            this.baseVisuals.back.setVisible(true);
+            this.add(this.baseVisuals.back);
+        }
+
+        // Add container to the scene
+        scene.add.existing(this);
+
+        // Set-up Dynamics
+        this.setUpEvents();
     }
 
     /* Getters ------------------------------------------------------------- */
@@ -93,14 +121,139 @@ export default class Card extends Phaser.GameObjects.Container {
 
     /* Public interface ---------------------------------------------------- */
 
-    flip() {}
+    flip() {
 
-    move() {}
+        // Save current scale
+        const currentScaleX = this.scaleX;
+        const currentScaleY = this.scaleY;
+
+        // Configure Dynamics
+        const duration: number = DYN_SPEED;
+
+        const timeline = this.scene.tweens.timeline({
+            onComplete: () => {
+                timeline.destroy();
+            },
+        });
+
+        timeline.add({
+            targets: this,
+            scale: this.scale * 1.1,
+            duration: duration,
+            ease: "Cubic.inOut",
+        });
+
+        timeline.add({
+            targets: this,
+            scaleX: 0,
+            duration: duration,
+            delay: 10,
+            ease: "Cubic.inOut",
+            onComplete: () => {
+                if (this.flipped) {
+                    this.baseVisuals.back.setVisible(false);
+                    this.remove(this.baseVisuals.back)
+                    this.flipped = false;
+                } else {
+                    this.baseVisuals.back.setVisible(true);
+                    this.add(this.baseVisuals.back);
+                    this.flipped = true;
+                }
+            },
+        });
+
+        timeline.add({
+            targets: this,
+            scaleX: currentScaleX * 1.1,
+            duration: duration,
+            ease: "Cubic.inOut",
+        });
+
+        timeline.add({
+            targets: this,
+            scaleX: currentScaleX,
+            scaleY: currentScaleY,
+            duration: duration,
+            ease: "Cubic.inOut",
+        });
+
+        timeline.play();
+    }
+
+    move() { }
+
+    /* Protected interface ------------------------------------------------- */
 
     /* Private interface --------------------------------------------------- */
 
-    private createVisuals() {
+    setUpEvents() {
 
+        /* Create self reference */
+        let self = this
+
+        /* Set container as interactive */
+        this.setInteractive(
+            new Phaser.Geom.Rectangle(
+                -this.baseVisuals.bg.width / 2,
+                -this.baseVisuals.bg.height / 2,
+                this.baseVisuals.bg.width,
+                this.baseVisuals.bg.height
+            ),
+            Phaser.Geom.Rectangle.Contains
+        )
+
+        /* Make it Draggable */
+        this.scene.input.setDraggable(this);
+
+        // ON CLICK DOWN 
+        this.on('pointerdown', function (pointer: Phaser.Input.Pointer) {
+            self.clickDown()
+        }, this)
+
+        // ON CLICK UP 
+        this.on('pointerup', function (pointer: Phaser.Input.Pointer) {
+            self.clickUp(pointer)
+        }, this)
+
+        /*         // ON HOVER IN 
+                this.on('pointerover', function (pointer: Phaser.Input.Pointer, object: CardBase) {
+                    console.log("pointerover on id: " + self.baseAttr.id)
+                    self.hover()
+                }, this)
+        
+                // ON HOVER OUT 
+                this.on('pointerout', function (pointer: Phaser.Input.Pointer, object: CardBase) {
+                    //console.log("pointerout on id: " + self.baseAttr.id)
+                    self.unhover()
+                }, this) */
+
+        /* DRAG START */
+        this.on('drag', function (pointer: Phaser.Input.Pointer, object: CardBase) {
+            //console.log('dragging id: ' + self.baseAttr.id)
+            self.drag(pointer)
+        }, this)
     }
 
+    clickDown() {
+        console.log("clickDown");
+    }
+
+    clickUp(pointer: Phaser.Input.Pointer) {
+
+        // Right Click
+        if (pointer.rightButtonReleased()) {
+            null;
+        }
+        else if (pointer.middleButtonReleased()) {
+            this.flip()
+        }
+        else if (pointer.leftButtonReleased()) {
+            null;
+        }
+    }
+
+    drag(pointer: Phaser.Input.Pointer) {
+
+        console.log("drag");
+    }
 }
