@@ -42,9 +42,9 @@ class CardBaseVisuals {
         }
 
         // Create Phaser Objects
-        this.bg = scene.add.image(0, 0, bgKey).setDepth(0);
-        this.back = scene.add.image(0, 0, "card_back").setDepth(0).setVisible(false);
-        this.art = scene.add.image(0, 0, art).setDepth(0);
+        this.bg = scene.add.image(0, 0, bgKey)
+        this.back = scene.add.image(0, 0, "card_back")
+        this.art = scene.add.image(0, 0, art)
     }
 }
 
@@ -72,13 +72,14 @@ export default  class Card extends Phaser.GameObjects.Container {
 
     // Status flags
     zoomStatus: CardZoomStatus;
-    flipped: Boolean;
+    faceDown: Boolean;
 
     /* Constructor --------------------------------------------------------- */
     constructor(
         scene: Phaser.Scene,
         x: number,
         y: number,
+        faceDown: Boolean = false,
         baseAttr: CardBaseAttr
     ) {
         // Call Base Constructor
@@ -92,18 +93,20 @@ export default  class Card extends Phaser.GameObjects.Container {
 
         // Internal status variables
         this.zoomStatus = CardZoomStatus.default;
-        this.flipped = true;
+        this.faceDown = faceDown;
 
         // Create Visual elements
         this.baseVisuals = new CardBaseVisuals(scene, baseAttr.type,
             baseAttr.faction, baseAttr.set, baseAttr.art);
 
         // Add elements to container
+        this.add(this.baseVisuals.back);
         this.add(this.baseVisuals.art);
         this.add(this.baseVisuals.bg);
-        if (this.flipped) {
-            this.baseVisuals.back.setVisible(true);
-            this.add(this.baseVisuals.back);
+
+        if (this.faceDown)
+        {
+            this.showBack();
         }
 
         // Add container to the scene
@@ -150,14 +153,12 @@ export default  class Card extends Phaser.GameObjects.Container {
             delay: 10,
             ease: "Cubic.inOut",
             onComplete: () => {
-                if (this.flipped) {
-                    this.baseVisuals.back.setVisible(false);
-                    this.remove(this.baseVisuals.back)
-                    this.flipped = false;
+                if (this.faceDown) {
+                    this.hideBack();
+                    this.faceDown = false;
                 } else {
-                    this.baseVisuals.back.setVisible(true);
-                    this.add(this.baseVisuals.back);
-                    this.flipped = true;
+                    this.showBack();
+                    this.faceDown = true;
                 }
             },
         });
@@ -183,6 +184,14 @@ export default  class Card extends Phaser.GameObjects.Container {
     move() { }
 
     /* Protected interface ------------------------------------------------- */
+
+    showBack() : void {
+        this.moveTo(this.baseVisuals.back, this.list.length-1);
+    }
+
+    hideBack() : void {
+        this.sendToBack(this.baseVisuals.back);
+    }
 
     /* Private interface --------------------------------------------------- */
 

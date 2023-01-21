@@ -110,16 +110,15 @@ export default class Board extends Phaser.Scene {
         this.input.mouse.disableContextMenu();
 
         /* TEST */
-        let card = new Card(this, 800, 600,
-            {
-                id: 1,
+        let card = new Card(this, 800, 600, undefined,
+            {   id: 1,
                 set: CardSet.core,
                 title: "My TEST card",
                 type: CardType.action,
                 faction: CardFaction.federation,
             }).setScale(0.12);
 
-        let ship = new ShipCard(this, 200, 600,
+        let ship = new ShipCard(this, 200, 600, true,
             {
                 id: 2,
                 set: CardSet.core,

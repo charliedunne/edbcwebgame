@@ -48,11 +48,12 @@ export default class ShipCard extends Card {
         scene: Phaser.Scene,
         x: number,
         y: number,
+        faceDown: Boolean = false,
         baseAttr: CardBaseAttr,
         shipAttr: CardShipAttr,
     ) {
         // Call Base Constructor
-        super(scene, x, y, baseAttr)
+        super(scene, x, y, faceDown, baseAttr)
 
         // Save inputs internally
         this.shipAttr = shipAttr;
@@ -66,6 +67,12 @@ export default class ShipCard extends Card {
         // Add elements to container
         this.add(this.shipVisuals.dataFrame);
         this.add(this.shipVisuals.costFrame);
+
+        // Set the face Down appropriatelly if it is set in initialization
+        if (this.faceDown)
+        {
+            this.showBack();
+        }
 
     }
 
