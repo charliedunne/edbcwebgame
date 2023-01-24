@@ -25,6 +25,7 @@ export enum CardSet {
 }
 
 export enum ShipRole {
+    none = "none",
     fighter = "Fighter",
     warship = "Warship",
     multipurpose = "Multipurpose",

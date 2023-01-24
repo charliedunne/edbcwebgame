@@ -336,8 +336,6 @@ export default class CardBase extends Phaser.GameObjects.Container {
         /* Set Flavor */
         if (this.baseAttr.flavor.length > 0)
         {
-            console.log(this.bg.height/2)
-
             this.flavor = scene.add
             .bitmapText(
                 -550,

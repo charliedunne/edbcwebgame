@@ -1,5 +1,6 @@
 import Card, { CardBaseVisuals } from "../engine/Card";
 import { CardBaseAttr, CardShipAttr } from "./CardBase";
+import Action, { ActionType } from "./Action"
 
 /* Private classes */
 class CardShipVisuals {
@@ -12,12 +13,19 @@ class CardShipVisuals {
     speed: Phaser.GameObjects.BitmapText;
     model: Phaser.GameObjects.BitmapText;
     role: Phaser.GameObjects.BitmapText;
+    actions: Phaser.GameObjects.BitmapText[];
+    actionsIco: Phaser.GameObjects.Image[];
 
     constructor(
         scene: Phaser.Scene,
         baseVisuals: CardBaseVisuals,
-        shipAttr: CardShipAttr
+        shipAttr: CardShipAttr,
+        actions: Action[]
     ) {
+
+        // Initialize
+        this.actions = [];
+        this.actionsIco = [];
 
         // Set-up Data Frame
         this.dataFrame = scene.add.image(0, 0, "card_cd");
@@ -82,6 +90,51 @@ class CardShipVisuals {
                 40
             )
             .setOrigin(0, 0);
+
+        // Actions
+        console.log(actions.length)
+        for (let i = 0; i < actions.length; ++i) {
+
+            let actionYpos = this.role.y + this.role.height + 40 + (50 * i);
+
+            // Select the action ICON
+            let icon = ""
+
+            if (actions[i].type === ActionType.attack)
+            {
+                icon = 'ico_action_attack';
+            }
+            else if (actions[i].type === ActionType.defense)
+            {
+                icon = 'icon_action_defense';
+            }
+            else if (actions[i].type === ActionType.task)
+            {
+                icon = 'icon_action_task';
+            }
+            else if (actions[i].type === ActionType.card)
+            {
+                icon = 'icon_action_card';
+            }
+
+            this.actions.push(scene.add
+                .bitmapText(
+                    -560 + 80,
+                    actionYpos,
+                    "eurostile",
+                    actions[i].toString().toUpperCase(),
+                    45
+                )
+                .setOrigin(0, 0).setTint(0xFF9900));
+
+            this.actionsIco.push(scene.add
+                .image(
+                    -560+40,
+                    actionYpos+22.5,
+                    icon
+                )
+                .setOrigin(0.5).setScale(0.8));
+        }
     }
 }
 
@@ -99,6 +152,9 @@ export default class ShipCard extends Card {
     // Ship Card Visuals
     shipVisuals: CardShipVisuals;
 
+    // Ship Actions
+    shipActions: Action[];
+
     /* Constructor --------------------------------------------------------- */
     constructor(
         scene: Phaser.Scene,
@@ -107,17 +163,20 @@ export default class ShipCard extends Card {
         faceDown: Boolean = false,
         baseAttr: CardBaseAttr,
         shipAttr: CardShipAttr,
+        shipActions: Action[],
     ) {
         // Call Base Constructor
         super(scene, x, y, faceDown, baseAttr)
 
         // Save inputs internally
         this.shipAttr = shipAttr;
+        this.shipActions = shipActions;
 
         // Internal status variables
 
         // Create Visual elements
-        this.shipVisuals = new CardShipVisuals(scene, this.baseVisuals, this.shipAttr);
+        this.shipVisuals = new CardShipVisuals(
+            scene, this.baseVisuals, this.shipAttr, shipActions);
 
         // Add elements to container
         this.add(this.shipVisuals.dataFrame);
@@ -127,14 +186,16 @@ export default class ShipCard extends Card {
         this.add(this.shipVisuals.speed);
         this.add(this.shipVisuals.model);
         this.add(this.shipVisuals.role);
+        for (let i = 0; i < this.shipVisuals.actions.length; ++i) {
+            this.add(this.shipVisuals.actionsIco[i])
+            this.add(this.shipVisuals.actions[i]);
+        }
 
 
         // Set the face Down appropriatelly if it is set in initialization
         if (this.faceDown) {
             this.showBack();
         }
-
-
 
     }
 

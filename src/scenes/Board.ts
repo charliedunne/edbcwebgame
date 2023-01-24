@@ -8,6 +8,7 @@ import { cardData } from "../data/cardsData"
 
 import Card from "../engine/Card";
 import ShipCard from "../engine/ShipCard";
+import AttackAction, { AttackType } from "../engine/AttackAction";
 
 export default class Board extends Phaser.Scene {
 
@@ -99,7 +100,6 @@ export default class Board extends Phaser.Scene {
 
     create() {
 
-
         /* Create Background */
         this.add.image(0, 0, "background").setOrigin(0);
         this.add.image(0, 0, "areas_layer").setOrigin(0);
@@ -111,13 +111,23 @@ export default class Board extends Phaser.Scene {
 
         /* TEST */
         let card = new Card(this, 1500, 600, undefined,
-            {   id: 1,
+            {
+                id: 1,
                 set: CardSet.core,
                 title: "My TEST card",
                 type: CardType.action,
                 faction: CardFaction.federation,
                 flavor: "En un lugar de la mancha\nde cuyo nombre no quiero acordarme"
             } as CardBaseAttr).setScale(0.43);
+
+        let action1 = new AttackAction(1,
+            { number: 1 },
+            [{ type: AttackType.fixed, damage: 3 },
+            { type: AttackType.burst, damage: 7 }]);
+
+        let action2 = new AttackAction(1,
+            { all: true, role:[ShipRole.multipurpose] },
+            [{ type: AttackType.burst, damage: 2 }]);
 
         let ship = new ShipCard(this, 600, 600, false,
             {
@@ -135,8 +145,9 @@ export default class Board extends Phaser.Scene {
                 speed: 30,
                 builder: "Lakon",
                 model: "Diamonback Explorer",
-                role: [ShipRole.explorer, ShipRole.fighter]                
-            } as CardShipAttr).setScale(0.45);
+                role: [ShipRole.explorer, ShipRole.fighter]
+            } as CardShipAttr,
+            [action1, action2]).setScale(0.45);
 
 
         /* Create main deck */
@@ -236,7 +247,6 @@ export default class Board extends Phaser.Scene {
     }
 
     update() {
-
 
     }
 }
