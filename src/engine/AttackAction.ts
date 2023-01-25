@@ -1,4 +1,5 @@
 import Action, { ActionType } from "./Action";
+import { Target } from "./ActionTypes";
 import Card from "./Card";
 import { CardFaction, ShipRole } from "./CardTypes"
 
@@ -41,12 +42,7 @@ export default class AttackAction extends Action {
     /* - Constructor ------------------------------------------------------- */
 
     constructor(id: number,
-        target: {
-            number?: number,
-            all?: Boolean,
-            faction?: CardFaction,
-            role?: ShipRole[]
-        },
+        target: Target,
         attackList: Attack[]) {
 
         // Call Base constructor
@@ -137,18 +133,6 @@ export default class AttackAction extends Action {
 
     run(): void {
 
-    }
-
-    getTargetString(): string {
-
-        let target: string = `Attack ${this.quantityString} ${this.factionString}${this.targetString}: `;
-
-        return target;
-    }
-
-    getAttackString(): string {
-        
-        return this.attackTypeString;
     }
 
     toString(): string {
