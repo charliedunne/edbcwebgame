@@ -4,8 +4,6 @@ import { Target, ActionType } from "./ActionTypes";
 export default class DefenseAction extends Action {
   /* - Private members --------------------------------------------------- */
 
-  private text: string;
-
   /* - Protected members ------------------------------------------------- */
 
   /* - Public members ---------------------------------------------------- */
@@ -49,13 +47,7 @@ export default class DefenseAction extends Action {
 
       this.text += " ship";
     }
-
-    // Add the second acction
-    if (this.secondaryAction !== undefined)
-    {
-      console.log("secondary action");
-      this.text += " AND " + this.secondaryAction.toString();
-    }    
+ 
   }
 
   /* Getters ------------------------------------------------------------- */
@@ -77,8 +69,4 @@ export default class DefenseAction extends Action {
   /* Public interface ---------------------------------------------------- */
 
   run(): void {}
-
-  toString(): string {
-    return this.text;
-  }
 }

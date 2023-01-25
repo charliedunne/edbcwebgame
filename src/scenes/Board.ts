@@ -140,7 +140,7 @@ export default class Board extends Phaser.Scene {
         let manage1 = new ManagementAction(3, Management.retreat, 2);
         let doubleaction = new ManagementAction(4, Management.draw, 2, manage1)
         let scanPlanet = new TaskAction(3, Task.scan)
-        let doubelaction2 = new AttackAction(2, 
+        let doubleaction2 = new AttackAction(2, 
             {number: 1}, [{type: AttackType.fixed, damage: 1}, {type:AttackType.burst, damage: 3}],
             scanPlanet);
 
@@ -162,7 +162,7 @@ export default class Board extends Phaser.Scene {
                 model: "Diamonback Explorer",
                 role: [ShipRole.explorer, ShipRole.fighter]
             } as CardShipAttr,
-            [action1, doubelaction2]).setScale(0.45);
+            [task1, task2, doubleaction2, manage1]).setScale(0.45);
 
 
         /* Create main deck */

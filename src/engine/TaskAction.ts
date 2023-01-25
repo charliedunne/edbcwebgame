@@ -4,8 +4,6 @@ import { Task, ActionType } from "./ActionTypes";
 export default class TaskAction extends Action {
   /* - Private members --------------------------------------------------- */
 
-  private text: string;
-
   /* - Protected members ------------------------------------------------- */
 
   /* - Public members ---------------------------------------------------- */
@@ -28,12 +26,6 @@ export default class TaskAction extends Action {
     if (task === Task.delivery) {
       this.text = "Make a delivery";
     }
-
-    // Add the second acction
-    if (this.secondaryAction !== undefined) {
-      console.log("secondary action");
-      this.text += " AND " + this.secondaryAction.toString();
-    }
   }
 
   /* Getters ------------------------------------------------------------- */
@@ -55,8 +47,4 @@ export default class TaskAction extends Action {
   /* Public interface ---------------------------------------------------- */
 
   run(): void {}
-
-  toString(): string {
-    return this.text;
-  }
 }

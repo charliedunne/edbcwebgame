@@ -109,6 +109,13 @@ export default class AttackAction extends Action {
         this.attackTypeString += ", ";
       }
     }
+
+    // Prepare output text
+    let targetString: string = `Attack ${this.quantityString} ${this.factionString}${this.targetString}: `;
+    let attackString: string = this.attackTypeString;
+
+    this.text = targetString + attackString;
+
   }
 
   /* Getters ------------------------------------------------------------- */
@@ -130,22 +137,4 @@ export default class AttackAction extends Action {
   /* Public interface ---------------------------------------------------- */
 
   run(): void {}
-
-  toString(): string {
-    // Compose final string
-    let text: string = ""
-
-    let target: string = `Attack ${this.quantityString} ${this.factionString}${this.targetString}: `;
-    let attack: string = this.attackTypeString;
-
-    text = target + attack;
-
-    // Add the second acction
-    if (this.secondaryAction !== undefined) {
-      console.log("secondary action");
-      text += " AND " + this.secondaryAction.toString();
-    }
-
-    return text;
-  }
 }

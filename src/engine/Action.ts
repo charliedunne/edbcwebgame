@@ -1,50 +1,77 @@
-import { ActionType } from './ActionTypes'
+import { ActionType } from "./ActionTypes";
 
-export default abstract class Action { 
+export default abstract class Action {
+  /* - Private members --------------------------------------------------- */
 
-    /* - Private members --------------------------------------------------- */
+  /* - Protected members ------------------------------------------------- */
 
-    /* None */
+  text: string;
 
-    /* - Protected members ------------------------------------------------- */
+  id: number;
+  type: ActionType;
+  secondaryAction?: Action;
 
-    id: number;
-    type: ActionType;
-    secondaryAction?: Action;
+  /* - Public members ---------------------------------------------------- */
 
-    /* - Public members ---------------------------------------------------- */
+  /* None */
 
-    /* None */
+  /* - Constructor ------------------------------------------------------- */
 
-    /* - Constructor ------------------------------------------------------- */
+  constructor(id: number, type: ActionType, secondaryAction?: Action) {
+    // Fill internal members
+    this.id = id;
+    this.type = type;
+    this.text = "";
 
-    constructor (id: number, type: ActionType, secondaryAction?: Action) {
+    this.secondaryAction = secondaryAction;
+  }
 
-        // Fill internal members
-        this.id = id;
-        this.type = type;
+  /* Getters ------------------------------------------------------------- */
 
-        this.secondaryAction = secondaryAction;
+  /* None */
+
+  /* Setters ------------------------------------------------------------- */
+
+  /* None */
+
+  /* Private interface --------------------------------------------------- */
+
+  parseLongString(text: string): string {
+    let outText: string = text;
+
+    if (text.length > 35) {
+      let firstSpace: number = text.indexOf(" ", 35);
+      let firstPart: string = text.substring(0, firstSpace);
+      let secondPart: string = text.substring(firstSpace + 1, text.length);
+
+      outText = firstPart + "\n" + secondPart;
     }
 
-    /* Getters ------------------------------------------------------------- */
+    return outText;
+  }
 
-    /* None */
+  /* Protected interface ------------------------------------------------- */
 
-    /* Setters ------------------------------------------------------------- */
+  /* None */
 
-    /* None */
+  /* Public interface ---------------------------------------------------- */
 
-    /* Private interface --------------------------------------------------- */
+  abstract run(): void;
 
-    /* None */
+  /**
+   * This function shall return the text to be printed in the card for
+   * each action
+   * @returns String to print on the card
+   */
+  toString(): string {
+    
+    let text: string = this.text;
 
-    /* Protected interface ------------------------------------------------- */
+    // Add the second acction
+    if (this.secondaryAction !== undefined) {
+      text += " AND " + this.secondaryAction.toString();
+    }
 
-    /* None */
-
-    /* Public interface ---------------------------------------------------- */
-
-    abstract run() : void;
-
+    return text;
+  }
 }

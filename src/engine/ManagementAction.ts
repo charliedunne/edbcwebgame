@@ -4,8 +4,6 @@ import { ActionType, Management, Target } from './ActionTypes';
 export default class ManagementAction extends Action {
   /* - Private members --------------------------------------------------- */
 
-  private text: string;
-
   /* - Protected members ------------------------------------------------- */
 
   /* - Public members ---------------------------------------------------- */
@@ -52,14 +50,6 @@ export default class ManagementAction extends Action {
             this.text += value + " cards";
         }
     }
-
-    // Add the second acction
-    if (this.secondaryAction !== undefined)
-    {
-      console.log("secondary action");
-      this.text += " AND " + this.secondaryAction.toString();
-    }
-
   }
 
   /* Getters ------------------------------------------------------------- */
@@ -82,7 +72,4 @@ export default class ManagementAction extends Action {
 
   run(): void {}
 
-  toString(): string {
-    return this.text;
-  }
 }

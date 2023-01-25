@@ -79,9 +79,15 @@ class CardShipVisuals {
       .setOrigin(0, 0);
 
     // Actions
-    console.log(actions.length);
+    let actionYpos: number = this.role.y + this.role.height + 40;
+
     for (let i = 0; i < actions.length; ++i) {
-      let actionYpos = this.role.y + this.role.height + 40 + 50 * i;
+
+      if (i > 0)
+      {
+        console.log(i + ", this.actions[i-1].height = " + this.actions[i-1].height)
+        actionYpos = actionYpos + ((this.actions[i-1].height + 10));
+      }
 
       // Select the action ICON
       let icon = "";
