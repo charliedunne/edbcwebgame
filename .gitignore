@@ -12,3 +12,4 @@ dist
 .editorconfig
 yarn.lock
 package-lock.json
+yarn.lock

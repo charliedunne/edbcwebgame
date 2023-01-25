@@ -1,7 +1,7 @@
 import Action  from "./Action";
-import { Target, ActionType } from "./ActionTypes";
+import { Task, ActionType } from "./ActionTypes";
 
-export default class DefenseAction extends Action {
+export default class TaskAction extends Action {
   /* - Private members --------------------------------------------------- */
 
   private text: string;
@@ -10,44 +10,23 @@ export default class DefenseAction extends Action {
 
   /* - Public members ---------------------------------------------------- */
 
-  public target: Target;
-  public damage: number;
+  public task: Task;
 
   /* - Constructor ------------------------------------------------------- */
 
-  constructor(id: number, target: Target, damage: number) {
-
+  constructor(id: number, task: Task) {
     // Base constructor
-    super(id, ActionType.defense);
+    super(id, ActionType.task);
 
-    this.target = target;
-    this.damage = damage;
-    this.text = "Remove " + this.damage + " damage from";
+    this.task = task;
+    this.text = "undefined";
 
-    if (target.itself === true) {
-      this.text += " this ship";
+    if (task === Task.scan) {
+        this.text = "Scan a Planet";
     }
 
-    if (target.all === true) {
-      this.text += " all cards in this Zone";
-    }
-
-    if (target.faction !== undefined) {
-      this.text += " any " + target.faction + " ship"
-    }
-
-    if (target.role !== undefined) {
-      this.text += " any ";
-
-      for (let i = 0; i < target.role.length; ++i) {
-        this.text += target.role[i];
-
-        if (i < target.role.length - 1) {
-          this.text += " OR ";
-        }
-      }
-
-      this.text += " ship";
+    if (task === Task.delivery) {
+        this.text = "Make a delivery"
     }
   }
 

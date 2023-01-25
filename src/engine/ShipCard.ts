@@ -1,6 +1,8 @@
 import Card, { CardBaseVisuals } from "../engine/Card";
 import { CardBaseAttr, CardShipAttr } from "./CardBase";
-import Action, { ActionType } from "./Action";
+import Action from "./Action";
+import { ActionType } from './ActionTypes';
+
 
 /* Private classes */
 class CardShipVisuals {
@@ -90,7 +92,7 @@ class CardShipVisuals {
         icon = "ico_action_defense";
       } else if (actions[i].type === ActionType.task) {
         icon = "ico_action_task";
-      } else if (actions[i].type === ActionType.card) {
+      } else if (actions[i].type === ActionType.management) {
         icon = "ico_action_card";
       }
 

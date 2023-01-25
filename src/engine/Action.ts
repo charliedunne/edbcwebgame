@@ -1,9 +1,4 @@
-export enum ActionType {
-    attack,
-    defense,
-    task,
-    card
-}
+import { ActionType } from './ActionTypes'
 
 export default abstract class Action { 
 

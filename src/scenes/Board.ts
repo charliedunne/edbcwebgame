@@ -10,6 +10,9 @@ import Card from "../engine/Card";
 import ShipCard from "../engine/ShipCard";
 import AttackAction, { AttackType } from "../engine/AttackAction";
 import DefenseAction from '../engine/DefenseAction';
+import TaskAction from '../engine/TaskAction';
+import { Task, Management } from '../engine/ActionTypes';
+import ManagementAction from '../engine/ManagementAction';
 
 export default class Board extends Phaser.Scene {
 
@@ -130,7 +133,10 @@ export default class Board extends Phaser.Scene {
             { all: true, role:[ShipRole.multipurpose] },
             [{ type: AttackType.burst, damage: 2 }]);
 
-        let defense1 = new DefenseAction(1, {role:[ShipRole.explorer]}, 1)
+        let defense1 = new DefenseAction(1, {role:[ShipRole.explorer]}, 1);
+        let task1 = new TaskAction(2, Task.scan);
+        let task2 = new TaskAction(2, Task.delivery);
+        let manage1 = new ManagementAction(3, Management.retreat, 2);
 
         let ship = new ShipCard(this, 600, 600, false,
             {
@@ -150,7 +156,7 @@ export default class Board extends Phaser.Scene {
                 model: "Diamonback Explorer",
                 role: [ShipRole.explorer, ShipRole.fighter]
             } as CardShipAttr,
-            [action1, action2, defense1]).setScale(0.45);
+            [action1, action2, defense1, task1, task2, manage1]).setScale(0.45);
 
 
         /* Create main deck */

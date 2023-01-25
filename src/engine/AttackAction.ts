@@ -1,5 +1,5 @@
-import Action, { ActionType } from "./Action";
-import { Target } from "./ActionTypes";
+import Action from "./Action";
+import { Target, ActionType } from "./ActionTypes";
 import Card from "./Card";
 import { CardFaction, ShipRole } from "./CardTypes"
 

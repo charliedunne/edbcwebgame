@@ -1,7 +1,7 @@
 import Action  from "./Action";
-import { Target, ActionType } from "./ActionTypes";
+import { ActionType, Management, Target } from './ActionTypes';
 
-export default class DefenseAction extends Action {
+export default class ManagementAction extends Action {
   /* - Private members --------------------------------------------------- */
 
   private text: string;
@@ -10,44 +10,47 @@ export default class DefenseAction extends Action {
 
   /* - Public members ---------------------------------------------------- */
 
-  public target: Target;
-  public damage: number;
+  public managment: Management;
+  public value: number;
 
   /* - Constructor ------------------------------------------------------- */
 
-  constructor(id: number, target: Target, damage: number) {
-
+  constructor(id: number, 
+    management: Management, value: number) {
     // Base constructor
-    super(id, ActionType.defense);
+    super(id, ActionType.management);
 
-    this.target = target;
-    this.damage = damage;
-    this.text = "Remove " + this.damage + " damage from";
+    this.managment = management;
+    this.value = value;
 
-    if (target.itself === true) {
-      this.text += " this ship";
-    }
+    this.text = "";
 
-    if (target.all === true) {
-      this.text += " all cards in this Zone";
-    }
+    if (management === Management.draw)
+    {
+        this.text = "Draw ";
 
-    if (target.faction !== undefined) {
-      this.text += " any " + target.faction + " ship"
-    }
-
-    if (target.role !== undefined) {
-      this.text += " any ";
-
-      for (let i = 0; i < target.role.length; ++i) {
-        this.text += target.role[i];
-
-        if (i < target.role.length - 1) {
-          this.text += " OR ";
+        if (value == 1) {
+            this.text += "one card"
         }
-      }
+        else
+        {
+            this.text += value + " cards"
+        }
 
-      this.text += " ship";
+    }
+
+    if (management === Management.retreat)
+    {
+        this.text = "Retreat ";
+
+        if (value === 1)
+        {
+            this.text += "this card";
+        }
+        else
+        {
+            this.text += value + " cards";
+        }
     }
   }
 
