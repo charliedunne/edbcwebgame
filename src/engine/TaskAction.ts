@@ -1,4 +1,4 @@
-import Action  from "./Action";
+import Action from "./Action";
 import { Task, ActionType } from "./ActionTypes";
 
 export default class TaskAction extends Action {
@@ -14,19 +14,25 @@ export default class TaskAction extends Action {
 
   /* - Constructor ------------------------------------------------------- */
 
-  constructor(id: number, task: Task) {
+  constructor(id: number, task: Task, secondaryAction?: Action) {
     // Base constructor
-    super(id, ActionType.task);
+    super(id, ActionType.task, secondaryAction);
 
     this.task = task;
     this.text = "undefined";
 
     if (task === Task.scan) {
-        this.text = "Scan a Planet";
+      this.text = "Scan a Planet";
     }
 
     if (task === Task.delivery) {
-        this.text = "Make a delivery"
+      this.text = "Make a delivery";
+    }
+
+    // Add the second acction
+    if (this.secondaryAction !== undefined) {
+      console.log("secondary action");
+      this.text += " AND " + this.secondaryAction.toString();
     }
   }
 

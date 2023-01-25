@@ -15,10 +15,10 @@ export default class DefenseAction extends Action {
 
   /* - Constructor ------------------------------------------------------- */
 
-  constructor(id: number, target: Target, damage: number) {
+  constructor(id: number, target: Target, damage: number, secondaryAction?: Action) {
 
     // Base constructor
-    super(id, ActionType.defense);
+    super(id, ActionType.defense, secondaryAction);
 
     this.target = target;
     this.damage = damage;
@@ -49,6 +49,13 @@ export default class DefenseAction extends Action {
 
       this.text += " ship";
     }
+
+    // Add the second acction
+    if (this.secondaryAction !== undefined)
+    {
+      console.log("secondary action");
+      this.text += " AND " + this.secondaryAction.toString();
+    }    
   }
 
   /* Getters ------------------------------------------------------------- */

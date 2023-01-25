@@ -10,6 +10,7 @@ export default abstract class Action {
 
     id: number;
     type: ActionType;
+    secondaryAction?: Action;
 
     /* - Public members ---------------------------------------------------- */
 
@@ -17,11 +18,13 @@ export default abstract class Action {
 
     /* - Constructor ------------------------------------------------------- */
 
-    constructor (id: number, type: ActionType) {
+    constructor (id: number, type: ActionType, secondaryAction?: Action) {
 
         // Fill internal members
         this.id = id;
         this.type = type;
+
+        this.secondaryAction = secondaryAction;
     }
 
     /* Getters ------------------------------------------------------------- */

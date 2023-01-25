@@ -16,9 +16,9 @@ export default class ManagementAction extends Action {
   /* - Constructor ------------------------------------------------------- */
 
   constructor(id: number, 
-    management: Management, value: number) {
+    management: Management, value: number, secondaryAction?: Action) {
     // Base constructor
-    super(id, ActionType.management);
+    super(id, ActionType.management, secondaryAction);
 
     this.managment = management;
     this.value = value;
@@ -52,6 +52,14 @@ export default class ManagementAction extends Action {
             this.text += value + " cards";
         }
     }
+
+    // Add the second acction
+    if (this.secondaryAction !== undefined)
+    {
+      console.log("secondary action");
+      this.text += " AND " + this.secondaryAction.toString();
+    }
+
   }
 
   /* Getters ------------------------------------------------------------- */

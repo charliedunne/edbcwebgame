@@ -107,7 +107,7 @@ class CardShipVisuals {
             -560 + 80,
             actionYpos,
             "eurostile",
-            actions[i].toString().toUpperCase(),
+            this.parseLongStringForActions(actions[i].toString().toUpperCase()),
             45
           )
           .setOrigin(0, 0)
@@ -122,6 +122,25 @@ class CardShipVisuals {
       );
     }
   }
+
+  /* Private interface --------------------------------------------------- */
+
+  parseLongStringForActions(text: string): string {
+    
+    let outText: string = text;
+    
+    if (text.length > 35)
+    {
+      let firstSpace: number = text.indexOf(' ', 35);
+      let firstPart: string = text.substring(0, firstSpace);
+      let secondPart: string = text.substring(firstSpace+1, text.length);
+
+      outText = firstPart + "\n" + secondPart;
+    }
+
+    return outText;
+  }
+
 }
 
 export default class ShipCard extends Card {
@@ -199,4 +218,6 @@ export default class ShipCard extends Card {
   splitActionString(text: string): string[] {
     return text.split(":", 2);
   }
+
+
 }

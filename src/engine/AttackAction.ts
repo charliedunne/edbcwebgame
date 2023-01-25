@@ -1,146 +1,151 @@
 import Action from "./Action";
 import { Target, ActionType } from "./ActionTypes";
 import Card from "./Card";
-import { CardFaction, ShipRole } from "./CardTypes"
+import { CardFaction, ShipRole } from "./CardTypes";
 
 export enum AttackType {
-    fixed = "fixed",
-    burst = "burst"
+  fixed = "fixed",
+  burst = "burst",
 }
 
 export class Attack {
+  public type: AttackType;
+  public damage: number;
 
-    public type: AttackType;
-    public damage: number;
-
-    constructor(type: AttackType, damage: number) {
-
-        this.type = type;
-        this.damage = damage;
-    }
+  constructor(type: AttackType, damage: number) {
+    this.type = type;
+    this.damage = damage;
+  }
 }
 
-
 export default class AttackAction extends Action {
+  /* - Private members --------------------------------------------------- */
 
-    /* - Private members --------------------------------------------------- */
+  private quantityString: string;
+  private targetString: string;
+  private factionString: string;
+  private attackTypeString: string;
 
-    private quantityString: string;
-    private targetString: string;
-    private factionString: string;
-    private attackTypeString: string;
+  /* - Protected members ------------------------------------------------- */
 
-    /* - Protected members ------------------------------------------------- */
+  attackList: Attack[];
 
-    attackList: Attack[];
+  /* - Public members ---------------------------------------------------- */
 
+  /* None */
 
-    /* - Public members ---------------------------------------------------- */
+  /* - Constructor ------------------------------------------------------- */
 
-    /* None */
+  constructor(
+    id: number,
+    target: Target,
+    attackList: Attack[],
+    secondaryAction?: Action
+  ) {
+    // Call Base constructor
+    super(id, ActionType.attack, secondaryAction);
 
-    /* - Constructor ------------------------------------------------------- */
+    this.attackList = attackList;
 
-    constructor(id: number,
-        target: Target,
-        attackList: Attack[]) {
+    this.quantityString = "";
+    this.targetString = "target";
+    this.factionString = "";
+    this.attackTypeString = "";
 
-        // Call Base constructor
-        super(id, ActionType.attack)
+    if (target.number !== undefined) {
+      if (target.number === 1) {
+        this.quantityString = "one";
+      } else if (target.number === 2) {
+        this.quantityString = "two";
+      } else if (target.number === 3) {
+        this.quantityString = "three";
+      } else {
+        this.quantityString = target.number.toString();
+      }
+    }
 
-        this.attackList = attackList;
+    if (target.all) {
+      this.quantityString = "all";
+    }
 
-        this.quantityString = "";
-        this.targetString = "target";
-        this.factionString = ""
-        this.attackTypeString = "";
+    if (target.faction !== undefined) {
+      this.factionString = `${target.faction.toString()} `;
+    }
 
-        if (target.number !== undefined) {
-            if (target.number === 1) {
-                this.quantityString = "one";
-            }
-            else if (target.number === 2) {
-                this.quantityString = "two";
-            }
-            else if (target.number === 3) {
-                this.quantityString = "three";
-            }
-            else {
-                this.quantityString = target.number.toString();
-            }
-        }
+    if (target.role !== undefined && target.role.length > 0) {
+      this.targetString = "";
 
-        if (target.all) {
-            this.quantityString = "all";
-        }
+      for (let i = 0; i < target.role.length; ++i) {
+        this.targetString += (target.role[i] as ShipRole).toString();
 
-        if (target.faction !== undefined) {
-            this.factionString = `${target.faction.toString()} `;
-        }
-
-        if (target.role !== undefined && target.role.length > 0) {
-
-            this.targetString = "";
-
-            for (let i = 0; i < target.role.length; ++i) {
-
-                this.targetString += (target.role[i] as ShipRole).toString();
-
-                if (i < target.role.length - 1) {
-
-                    if ((target.number !== undefined && target.number > 1) || target.all !== undefined) {
-                        this.targetString += "s";
-                    }
-
-                    this.targetString += " or ";
-                }
-            }
-        }
-
-        // Add Plural
-        if ((target.number !== undefined && target.number > 1) || target.all !== undefined) {
+        if (i < target.role.length - 1) {
+          if (
+            (target.number !== undefined && target.number > 1) ||
+            target.all !== undefined
+          ) {
             this.targetString += "s";
+          }
+
+          this.targetString += " or ";
         }
-
-        // Add Attack types and damage
-        for (let i = 0; i < attackList.length; ++i) {
-            this.attackTypeString += `${attackList[i].type.toString()} ${attackList[i].damage.toString()}`;
-
-            if (i < attackList.length - 1) {
-                this.attackTypeString += ", ";
-            }
-        }
-
+      }
     }
 
-    /* Getters ------------------------------------------------------------- */
-
-    /* None */
-
-    /* Setters ------------------------------------------------------------- */
-
-    /* None */
-
-    /* Private interface --------------------------------------------------- */
-
-    /* None */
-
-    /* Protected interface ------------------------------------------------- */
-
-    /* None */
-
-    /* Public interface ---------------------------------------------------- */
-
-    run(): void {
-
+    // Add Plural
+    if (
+      (target.number !== undefined && target.number > 1) ||
+      target.all !== undefined
+    ) {
+      this.targetString += "s";
     }
 
-    toString(): string {
+    // Add Attack types and damage
+    for (let i = 0; i < attackList.length; ++i) {
+      this.attackTypeString += `${attackList[i].type.toString()} ${attackList[
+        i
+      ].damage.toString()}`;
 
-        // Compose final string
-        let target: string = `Attack ${this.quantityString} ${this.factionString}${this.targetString}: `;
-        let attack: string = this.attackTypeString;
-
-        return (target + attack) as string;
+      if (i < attackList.length - 1) {
+        this.attackTypeString += ", ";
+      }
     }
+  }
+
+  /* Getters ------------------------------------------------------------- */
+
+  /* None */
+
+  /* Setters ------------------------------------------------------------- */
+
+  /* None */
+
+  /* Private interface --------------------------------------------------- */
+
+  /* None */
+
+  /* Protected interface ------------------------------------------------- */
+
+  /* None */
+
+  /* Public interface ---------------------------------------------------- */
+
+  run(): void {}
+
+  toString(): string {
+    // Compose final string
+    let text: string = ""
+
+    let target: string = `Attack ${this.quantityString} ${this.factionString}${this.targetString}: `;
+    let attack: string = this.attackTypeString;
+
+    text = target + attack;
+
+    // Add the second acction
+    if (this.secondaryAction !== undefined) {
+      console.log("secondary action");
+      text += " AND " + this.secondaryAction.toString();
+    }
+
+    return text;
+  }
 }
