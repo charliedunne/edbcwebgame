@@ -8,10 +8,10 @@ import { cardData } from "../data/cardsData"
 
 import Card from "../engine/Card";
 import ShipCard from "../engine/ShipCard";
-import AttackAction, { AttackType } from "../engine/AttackAction";
+import AttackAction, { AttackType } from "../engine/actions/AttackAction";
 import DefenseAction from '../engine/actions/DefenseAction';
-import TaskAction from '../engine/TaskAction';
-import { Task, Management } from '../engine/ActionTypes';
+import TaskAction from '../engine/actions/TaskAction';
+import { Task, Management } from '../engine/actions/ActionTypes';
 import ManagementAction from '../engine/actions/ManagementAction';
 import Action from '../engine/actions/Action';
 

@@ -1,7 +1,7 @@
 import Card, { CardBaseVisuals } from "../engine/Card";
 import { CardBaseAttr, CardShipAttr } from "./CardBase";
 import Action from "./actions/Action";
-import { ActionType } from './ActionTypes';
+import { ActionType } from './actions/ActionTypes';
 
 
 /* Private classes */
