@@ -14,6 +14,9 @@ import TaskAction from '../engine/actions/TaskAction';
 import { Task, Management } from '../engine/actions/ActionTypes';
 import ManagementAction from '../engine/actions/ManagementAction';
 import Action from '../engine/actions/Action';
+import Elite from "../engine/abilities/Elite";
+import Dodge from "../engine/abilities/Dodge";
+
 
 export default class Board extends Phaser.Scene {
 
@@ -144,6 +147,9 @@ export default class Board extends Phaser.Scene {
             {number: 1}, [{type: AttackType.fixed, damage: 1}, {type:AttackType.burst, damage: 3}],
             scanPlanet);
 
+        let abilityElite = new Elite(1);
+        let abilityDodge = new Dodge(2, 2, 3);
+
         let ship = new ShipCard(this, 600, 600, false,
             {
                 id: 2,
@@ -162,7 +168,8 @@ export default class Board extends Phaser.Scene {
                 model: "Diamonback Explorer",
                 role: [ShipRole.explorer, ShipRole.fighter]
             } as CardShipAttr,
-            [task1, task2, doubleaction2, manage1]).setScale(0.45);
+            [task1, task2, doubleaction2, manage1],
+            [abilityElite, abilityDodge]).setScale(0.45);
 
 
         /* Create main deck */

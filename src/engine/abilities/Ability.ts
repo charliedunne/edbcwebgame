@@ -75,6 +75,6 @@ export default abstract class Ability {
    */
   toString(): string {
     
-    return this.text;
+    return this.title;
   }
 }

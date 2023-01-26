@@ -1,5 +1,6 @@
 import Card, { CardBaseVisuals } from "../engine/Card";
 import { CardBaseAttr, CardShipAttr } from "./CardBase";
+import Ability from "./abilities/Ability";
 import Action from "./actions/Action";
 import { ActionType } from './actions/ActionTypes';
 
@@ -16,16 +17,21 @@ class CardShipVisuals {
   role: Phaser.GameObjects.BitmapText;
   actions: Phaser.GameObjects.BitmapText[];
   actionsIco: Phaser.GameObjects.Image[];
+  abilities: Phaser.GameObjects.BitmapText[];
+  abilitiesIco: Phaser.GameObjects.Image[];
 
   constructor(
     scene: Phaser.Scene,
     baseVisuals: CardBaseVisuals,
     shipAttr: CardShipAttr,
-    actions: Action[]
+    actions: Action[],
+    abilities?: Ability[],
   ) {
     // Initialize
     this.actions = [];
     this.actionsIco = [];
+    this.abilities = [];
+    this.abilitiesIco = [];
 
     // Set-up Data Frame
     this.dataFrame = scene.add.image(0, 0, "card_cd");
@@ -83,10 +89,8 @@ class CardShipVisuals {
 
     for (let i = 0; i < actions.length; ++i) {
 
-      if (i > 0)
-      {
-        console.log(i + ", this.actions[i-1].height = " + this.actions[i-1].height)
-        actionYpos = actionYpos + ((this.actions[i-1].height + 10));
+      if (i > 0) {
+        actionYpos = actionYpos + ((this.actions[i - 1].height + 10));
       }
 
       // Select the action ICON
@@ -127,19 +131,58 @@ class CardShipVisuals {
           .setScale(0.8)
       );
     }
+
+    if (abilities !== undefined) {
+
+      let abilityYpos: number =
+        this.actions[this.actions.length - 1].y +
+        this.actions[this.actions.length - 1].height + 40;
+
+      for (let i = 0; i < abilities.length; ++i) {
+
+        // Update the Ypos
+        if (i > 0) {
+          abilityYpos = abilityYpos + ((this.abilities[i - 1].height + 10));
+        }
+
+        // Set Icon
+        let icon = "ico_ability";
+
+        this.abilities.push(
+          scene.add
+            .bitmapText(
+              -560 + 80,
+              abilityYpos,
+              "eurostile",
+              this.parseLongStringForActions(abilities[i].toString().toUpperCase()),
+              45
+            )
+            .setOrigin(0, 0)
+            .setTint(0x4499ff)
+        );
+
+        this.abilitiesIco.push(
+          scene.add
+            .image(-560 + 40, abilityYpos + 22.5, icon)
+            .setOrigin(0.5)
+            .setScale(0.8)
+        );
+      }
+    }
   }
+
+
 
   /* Private interface --------------------------------------------------- */
 
   parseLongStringForActions(text: string): string {
-    
+
     let outText: string = text;
-    
-    if (text.length > 35)
-    {
+
+    if (text.length > 35) {
       let firstSpace: number = text.indexOf(' ', 35);
       let firstPart: string = text.substring(0, firstSpace);
-      let secondPart: string = text.substring(firstSpace+1, text.length);
+      let secondPart: string = text.substring(firstSpace + 1, text.length);
 
       outText = firstPart + "\n" + secondPart;
     }
@@ -165,6 +208,9 @@ export default class ShipCard extends Card {
   // Ship Actions
   shipActions: Action[];
 
+  // Ship Abilities (optional)
+  shipAbilities?: Ability[];
+
   /* Constructor --------------------------------------------------------- */
   constructor(
     scene: Phaser.Scene,
@@ -173,7 +219,8 @@ export default class ShipCard extends Card {
     faceDown: Boolean = false,
     baseAttr: CardBaseAttr,
     shipAttr: CardShipAttr,
-    shipActions: Action[]
+    shipActions: Action[],
+    shipAbilities?: Ability[]
   ) {
     // Call Base Constructor
     super(scene, x, y, faceDown, baseAttr);
@@ -182,6 +229,11 @@ export default class ShipCard extends Card {
     this.shipAttr = shipAttr;
     this.shipActions = shipActions;
 
+    if (shipAbilities !== undefined) {
+      this.shipAbilities = shipAbilities;
+    }
+
+
     // Internal status variables
 
     // Create Visual elements
@@ -189,7 +241,8 @@ export default class ShipCard extends Card {
       scene,
       this.baseVisuals,
       this.shipAttr,
-      shipActions
+      shipActions,
+      shipAbilities
     );
 
     // Add elements to container
@@ -204,6 +257,12 @@ export default class ShipCard extends Card {
       this.add(this.shipVisuals.actionsIco[i]);
       this.add(this.shipVisuals.actions[i]);
     }
+
+    for (let i = 0; i < this.shipVisuals.abilities.length; ++i) {
+      this.add(this.shipVisuals.abilitiesIco[i]);
+      this.add(this.shipVisuals.abilities[i]);
+    }
+
 
     // Set the face Down appropriatelly if it is set in initialization
     if (this.faceDown) {

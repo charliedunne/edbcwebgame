@@ -64,6 +64,7 @@ export function edbc_preload(scene: Phaser.Scene) {
      scene.load.image('ico_action_defense', 'assets/images/cards/icons/edbc_action__defense.png');
      scene.load.image('ico_action_card', 'assets/images/cards/icons/edbc_action__card.png');
      scene.load.image('ico_action_task', 'assets/images/cards/icons/edbc_action__task.png');
+     scene.load.image('ico_ability', 'assets/images/cards/icons/edbc_ability.png');
      
 
      /* Art */
