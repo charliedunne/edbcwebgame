@@ -15,10 +15,8 @@ class CardShipVisuals {
   speed: Phaser.GameObjects.BitmapText;
   model: Phaser.GameObjects.BitmapText;
   role: Phaser.GameObjects.BitmapText;
-  actions: Phaser.GameObjects.BitmapText[];
-  actionsIco: Phaser.GameObjects.Image[];
-  abilities: Phaser.GameObjects.BitmapText[];
-  abilitiesIco: Phaser.GameObjects.Image[];
+  actions: Phaser.GameObjects.Container[];
+  abilities: Phaser.GameObjects.Container[];
 
   constructor(
     scene: Phaser.Scene,
@@ -29,9 +27,7 @@ class CardShipVisuals {
   ) {
     // Initialize
     this.actions = [];
-    this.actionsIco = [];
     this.abilities = [];
-    this.abilitiesIco = [];
 
     // Set-up Data Frame
     this.dataFrame = scene.add.image(0, 0, "card_cd");
@@ -86,57 +82,26 @@ class CardShipVisuals {
 
     // Actions
     let actionYpos: number = this.role.y + this.role.height + 40;
+    let actionXpos: number = -560 + 40;
 
     for (let i = 0; i < actions.length; ++i) {
 
       if (i > 0) {
+        console.log(this.actions[i - 1].height)
         actionYpos = actionYpos + ((this.actions[i - 1].height + 10));
       }
 
-      // Select the action ICON
-      let icon = "";
-
-      if (actions[i].type === ActionType.attack) {
-        icon = "ico_action_attack";
-      } else if (actions[i].type === ActionType.defense) {
-        icon = "ico_action_defense";
-      } else if (actions[i].type === ActionType.task) {
-        icon = "ico_action_task";
-      } else if (actions[i].type === ActionType.management) {
-        icon = "ico_action_card";
-      }
-
-      /*       let actionText: string[] = actions[i]
-        .toString()
-        .toUpperCase()
-        .split(":", 2);
- */
-      this.actions.push(
-        scene.add
-          .bitmapText(
-            -560 + 80,
-            actionYpos,
-            "eurostile",
-            this.parseLongStringForActions(actions[i].toString().toUpperCase()),
-            45
-          )
-          .setOrigin(0, 0)
-          .setTint(0xff9900)
-      );
-
-      this.actionsIco.push(
-        scene.add
-          .image(-560 + 40, actionYpos + 22.5, icon)
-          .setOrigin(0.5)
-          .setScale(0.8)
-      );
+      this.actions.push(this.assembleActionContainer(scene, actionXpos, actionYpos, actions[i]));
     }
 
+    // Abilities
     if (abilities !== undefined) {
 
       let abilityYpos: number =
         this.actions[this.actions.length - 1].y +
         this.actions[this.actions.length - 1].height + 40;
+
+      let abilityXpos: number = -560 + 40;
 
       for (let i = 0; i < abilities.length; ++i) {
 
@@ -145,42 +110,25 @@ class CardShipVisuals {
           abilityYpos = abilityYpos + ((this.abilities[i - 1].height + 10));
         }
 
-        // Set Icon
-        let icon = "ico_ability";
-
-        this.abilities.push(
-          scene.add
-            .bitmapText(
-              -560 + 80,
-              abilityYpos,
-              "eurostile",
-              this.parseLongStringForActions(abilities[i].toString().toUpperCase()),
-              45
-            )
-            .setOrigin(0, 0)
-            .setTint(0x4499ff)
-        );
-
-        this.abilitiesIco.push(
-          scene.add
-            .image(-560 + 40, abilityYpos + 22.5, icon)
-            .setOrigin(0.5)
-            .setScale(0.8)
-        );
+        this.abilities.push(this.assembleAbilityContainer(scene, abilityXpos, abilityYpos, abilities[i]));
       }
     }
   }
 
-
-
   /* Private interface --------------------------------------------------- */
 
-  parseLongStringForActions(text: string): string {
+  /**
+   * Split text into different lines if the width of it is too much.
+   * @param text string to trim
+   * @param maxSize maximum size (in characters) to support
+   * @returns 
+   */
+  private parseLongStringForActions(text: string, maxSize: number): string {
 
     let outText: string = text;
 
-    if (text.length > 35) {
-      let firstSpace: number = text.indexOf(' ', 35);
+    if (text.length > maxSize) {
+      let firstSpace: number = text.indexOf(' ', maxSize);
       let firstPart: string = text.substring(0, firstSpace);
       let secondPart: string = text.substring(firstSpace + 1, text.length);
 
@@ -190,6 +138,159 @@ class CardShipVisuals {
     return outText;
   }
 
+  private splitActionString(text: string): string[] {
+    return text.split(":", 2);
+  }
+
+  private assembleActionContainer(
+    scene: Phaser.Scene, xPos: number, yPos: number, action: Action): Phaser.GameObjects.Container {
+
+    // Container to return
+    let container: Phaser.GameObjects.Container = new Phaser.GameObjects.Container(scene, xPos, yPos);
+
+    // Select the action ICON
+    let iconImage = "";
+
+    if (action.type === ActionType.attack) {
+      iconImage = "ico_action_attack";
+    } else if (action.type === ActionType.defense) {
+      iconImage = "ico_action_defense";
+    } else if (action.type === ActionType.task) {
+      iconImage = "ico_action_task";
+    } else if (action.type === ActionType.management) {
+      iconImage = "ico_action_card";
+    }
+
+    let actionText: string[] = action
+      .toString()
+      .toUpperCase()
+      .split(":", 2);
+
+
+    let icon: Phaser.GameObjects.Image = scene.add
+      .image(0, 0, iconImage)
+      .setOrigin(0.5)
+      .setScale(0.8)
+
+    let text: Phaser.GameObjects.BitmapText = scene.add
+      .bitmapText(
+        icon.x + icon.width / 2,
+        0,
+        "eurostile",
+        this.parseLongStringForActions(actionText[0], 25),
+        45
+      )
+      .setOrigin(0, 0.5)
+      .setTint(0xff9900);
+
+    container.add(icon);
+    container.add(text);
+
+    // Update the container dimensions
+    container.width = icon.width + text.width;
+    container.height = text.height;
+
+    if (action.type === ActionType.attack) {
+
+      let secondText: Phaser.GameObjects.BitmapText = scene.add
+        .bitmapText(
+          text.x + text.width,
+          0,
+          "eurostile_bold",
+          ": " + actionText[1],
+          45
+        )
+        .setOrigin(0, 0.5)
+        .setTint(0xff9900);
+
+      container.add(secondText);
+
+      // Add size to the contianer width (in cse of second text part)
+      container.width += secondText.width;
+    }
+
+    return container;
+  }
+
+  private assembleAbilityContainer(
+    scene: Phaser.Scene, xPos: number, yPos: number, ability: Ability): Phaser.GameObjects.Container {
+
+    // Container to return
+    let container: Phaser.GameObjects.Container = new Phaser.GameObjects.Container(scene, xPos, yPos);
+
+    // Select the action ICON
+    let iconImage = "ico_ability";
+
+    let icon: Phaser.GameObjects.Image = scene.add
+      .image(0, 0, iconImage)
+      .setOrigin(0.5)
+      .setScale(0.8)
+
+    container.add(icon);
+    container.width = icon.width;
+
+    let abilityText: string[] = ability
+      .toString()
+      .toUpperCase()
+      .split(":", 2);
+
+    console.log("ability: " + abilityText.length + ". -> " + abilityText)
+
+    if (abilityText.length == 1) {
+
+      let abilityString: Phaser.GameObjects.BitmapText = scene.add
+        .bitmapText(
+          icon.x + icon.width / 2,
+          0,
+          "eurostile_bold",
+          this.parseLongStringForActions(abilityText[0], 35),
+          45
+        )
+        .setOrigin(0, 0.5)
+        .setTint(0x4499ff);
+
+      container.add(abilityString);
+
+      // Update the container dimensions
+      container.width += abilityString.width;
+      container.height = abilityString.height;
+      
+    }
+    else
+    {
+      let karmaCost: Phaser.GameObjects.BitmapText = scene.add
+        .bitmapText(
+          icon.x + icon.width / 2,
+          0,
+          "eurostile",
+          abilityText[0],
+          45
+        )
+        .setOrigin(0, 0.5)
+        .setTint(0x4499ff);
+
+      container.add(karmaCost);
+
+      let abilityString: Phaser.GameObjects.BitmapText = scene.add
+        .bitmapText(
+          karmaCost.x + karmaCost.width,
+          0,
+          "eurostile_bold",
+          ": " + abilityText[1],
+          45
+        )
+        .setOrigin(0, 0.5)
+        .setTint(0x4499ff);
+
+      container.add(abilityString);
+
+      // Update the container dimensions
+      container.width += karmaCost.width + abilityString.width;
+      container.height = abilityString.height;
+    }
+
+    return container;
+  }
 }
 
 export default class ShipCard extends Card {
@@ -233,7 +334,6 @@ export default class ShipCard extends Card {
       this.shipAbilities = shipAbilities;
     }
 
-
     // Internal status variables
 
     // Create Visual elements
@@ -254,13 +354,11 @@ export default class ShipCard extends Card {
     this.add(this.shipVisuals.model);
     this.add(this.shipVisuals.role);
     for (let i = 0; i < this.shipVisuals.actions.length; ++i) {
-      this.add(this.shipVisuals.actionsIco[i]);
       this.add(this.shipVisuals.actions[i]);
     }
 
     for (let i = 0; i < this.shipVisuals.abilities.length; ++i) {
-      this.add(this.shipVisuals.abilitiesIco[i]);
-      this.add(this.shipVisuals.abilities[i]);
+      this.add(this.shipVisuals.abilities[i])
     }
 
 
@@ -278,11 +376,7 @@ export default class ShipCard extends Card {
 
   /* Protected interface ------------------------------------------------- */
 
-  /* Private interface --------------------------------------------------- */
 
-  splitActionString(text: string): string[] {
-    return text.split(":", 2);
-  }
 
 
 }
