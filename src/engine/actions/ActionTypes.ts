@@ -1,5 +1,5 @@
 
-import { CardFaction, ShipRole } from "./CardTypes"
+import { CardFaction, ShipRole } from "../CardTypes"
 
 
 export enum ActionType {
