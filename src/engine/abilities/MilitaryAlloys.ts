@@ -1,7 +1,7 @@
 import Ability from "./Ability";
 import { AbilityType } from "./AbilityTypes";
 
-export default class Overkill extends Ability {
+export default class MilitaryAlloys extends Ability {
   /* - Private members --------------------------------------------------- */
 
   /* - Protected members ------------------------------------------------- */
@@ -10,12 +10,12 @@ export default class Overkill extends Ability {
 
   /* - Constructor ------------------------------------------------------- */
 
-  constructor(id: number, karmaCost?: number) {
+  constructor(id: number,karmaCost?: number) {
     // Base constructor
-    super(id, AbilityType.overkill, karmaCost);
+    super(id, AbilityType.militaryAlloys, karmaCost);
 
-    this.title += "Overkill";
-    this.desc += "Put any excess damage counters onto other enemy ships in\nthe same zone. You can distribute these damage counters in any way\nyou see fit. Your opponent can attempt to avoid the damage with the\nDodge ability or with an Action card that avoids damage as normal";
+    this.title += "Military Alloys";
+    this.desc += "Burst attacks only hit this unit on a 5 or 6.\nThis ability does not affect Fixed damage.\nIf this ship is attacked by a ship using the\nElite ability, it is still only hit on a 5 or 6\nand the Elite ability is ignored.";
   }
 
   /* Getters ------------------------------------------------------------- */

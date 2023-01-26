@@ -1,6 +1,6 @@
 import Card, { CardBaseVisuals } from "../engine/Card";
 import { CardBaseAttr, CardShipAttr } from "./CardBase";
-import Action from "./Action";
+import Action from "./actions/Action";
 import { ActionType } from './ActionTypes';
 
 

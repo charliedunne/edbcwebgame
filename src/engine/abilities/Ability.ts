@@ -5,10 +5,12 @@ export default abstract class Ability {
 
   /* - Protected members ------------------------------------------------- */
 
-  text: string;
+  title: string;
+  desc: string;
 
   id: number;
   type: AbilityType;
+  karmaCost?: number;
   
   /* - Public members ---------------------------------------------------- */
 
@@ -16,11 +18,22 @@ export default abstract class Ability {
 
   /* - Constructor ------------------------------------------------------- */
 
-  constructor(id: number, type: AbilityType) {
+  constructor(id: number, type: AbilityType, karmaCost?: number) {
     // Fill internal members
     this.id = id;
+    
     this.type = type;
-    this.text = "";
+
+    if (karmaCost !== undefined) {
+      this.karmaCost = karmaCost;
+      this.title = "Spend " + karmaCost + " karma: "
+    }
+    else
+    {
+      this.title = "";
+    }
+
+    this.desc = "";
   }
 
   /* Getters ------------------------------------------------------------- */

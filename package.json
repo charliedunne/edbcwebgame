@@ -5,6 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "vite",
+    "dev_debug": "vite --debug",
+    "host": "vite --host",
     "build": "vite build",
     "serve": "vite preview"
   },

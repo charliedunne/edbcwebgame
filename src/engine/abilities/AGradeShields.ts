@@ -1,7 +1,7 @@
 import Ability from "./Ability";
 import { AbilityType } from "./AbilityTypes";
 
-export default class Overkill extends Ability {
+export default class AGradeShields extends Ability {
   /* - Private members --------------------------------------------------- */
 
   /* - Protected members ------------------------------------------------- */
@@ -12,10 +12,10 @@ export default class Overkill extends Ability {
 
   constructor(id: number, karmaCost?: number) {
     // Base constructor
-    super(id, AbilityType.overkill, karmaCost);
+    super(id, AbilityType.aGradeShields, karmaCost);
 
-    this.title += "Overkill";
-    this.desc += "Put any excess damage counters onto other enemy ships in\nthe same zone. You can distribute these damage counters in any way\nyou see fit. Your opponent can attempt to avoid the damage with the\nDodge ability or with an Action card that avoids damage as normal";
+    this.title += "A-Grade Shields";
+    this.desc += "Avoid 1 point of damage when attacked.\nYou take this point off the total damage inflicted by a single unit.\nIf a ship has two attack forms, such as Fixed 2 and Burst 2,\nyou can only take off a single point of damage,\nnot one point from the Fixed and one from the Burst.\nThis ability is continuous, so you can apply it\n to each individual attack that affects you.";
   }
 
   /* Getters ------------------------------------------------------------- */

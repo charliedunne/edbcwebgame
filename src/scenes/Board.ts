@@ -9,11 +9,11 @@ import { cardData } from "../data/cardsData"
 import Card from "../engine/Card";
 import ShipCard from "../engine/ShipCard";
 import AttackAction, { AttackType } from "../engine/AttackAction";
-import DefenseAction from '../engine/DefenseAction';
+import DefenseAction from '../engine/actions/DefenseAction';
 import TaskAction from '../engine/TaskAction';
 import { Task, Management } from '../engine/ActionTypes';
-import ManagementAction from '../engine/ManagementAction';
-import Action from '../engine/Action';
+import ManagementAction from '../engine/actions/ManagementAction';
+import Action from '../engine/actions/Action';
 
 export default class Board extends Phaser.Scene {
 

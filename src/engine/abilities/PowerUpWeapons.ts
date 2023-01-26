@@ -1,21 +1,28 @@
+import { AttackType } from "../actions/AttackAction";
 import Ability from "./Ability";
 import { AbilityType } from "./AbilityTypes";
 
-export default class Overkill extends Ability {
+export default class PowerUpWeapons extends Ability {
   /* - Private members --------------------------------------------------- */
 
   /* - Protected members ------------------------------------------------- */
 
   /* - Public members ---------------------------------------------------- */
 
+  value: number;
+  attackType: AttackType;
+
   /* - Constructor ------------------------------------------------------- */
 
-  constructor(id: number, karmaCost?: number) {
+  constructor(id: number, value: number, type: AttackType, karmaCost?: number) {
     // Base constructor
-    super(id, AbilityType.overkill, karmaCost);
+    super(id, AbilityType.powerUpWeapons, karmaCost);
 
-    this.title += "Overkill";
-    this.desc += "Put any excess damage counters onto other enemy ships in\nthe same zone. You can distribute these damage counters in any way\nyou see fit. Your opponent can attempt to avoid the damage with the\nDodge ability or with an Action card that avoids damage as normal";
+    this.value = value;
+    this.attackType = type;
+
+    this.title += "Power Up Weapons: +" + value + " " + type.toString();
+    this.desc += "This unit gains +" + value + " " + type.toString() + "\ndamage for its next attack";
   }
 
   /* Getters ------------------------------------------------------------- */

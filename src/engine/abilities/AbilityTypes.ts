@@ -1,0 +1,25 @@
+
+export enum AbilityType {
+    aGradeShields,
+    counterattack,
+    cycle,
+    deadly,
+    dodge,
+    elite,
+    fighterBay,
+    interdict,
+    liner,
+    militaryAlloys,
+    overkill,
+    shooter,
+    fighterProtection,
+    removeOutfitting,
+    highPriorityTarget,
+    mechanic,
+    stun,
+    siege,
+    overload,
+    betrayer,
+    powerUpWeapons,
+
+}
